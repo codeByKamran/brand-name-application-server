@@ -1,4 +1,4 @@
-import { allowedOrigins } from "../config/cors.js";
+import { allowedOrigins } from "../config/origins.js";
 
 const credentials = async (req, res, next) => {
   const origin = req.headers.origin;

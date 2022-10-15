@@ -1,4 +1,6 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import cors from "cors";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
@@ -14,11 +16,22 @@ import rootRouter from "./routes/root.js";
 
 import credentials from "./middlewares/credentials.js";
 import connectMongo from "./db/mongo.js";
+import { socketIOOptions } from "./config/socket.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, socketIOOptions);
+
+io.on("connection", (socket) => {
+  console.log(`Client with ID of ${socket.id} connected!`);
+  socket.emit("connection_event", { message: "Socket Connection Established" });
+  socket.on("disconnect", () => {
+    console.log("User Disconnected");
+  });
+});
 
 // connecting to mongo
 connectMongo();
@@ -49,6 +62,6 @@ mongoose.connection.once("open", () => {
 
 const PORT = process.env.PORT || 3500;
 
-app.listen(PORT, () => console.log(`Server started on ${PORT}`));
+httpServer.listen(PORT, () => console.log(`Server started on ${PORT}`));
 
 app.use(errorHandler);
