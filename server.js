@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, socketIOOptions);
+export const io = new Server(httpServer, socketIOOptions);
 
 io.on("connection", (socket) => {
   console.log(`Client with ID of ${socket.id} connected!`);
@@ -67,6 +67,8 @@ mongoose.connection.once("open", () => {
 
 const PORT = process.env.PORT || 3500;
 
-httpServer.listen(PORT, () => console.log(`Server started on ${PORT}`));
+httpServer.listen(PORT, () => {
+  console.log(`Server started on ${PORT}`);
+});
 
 app.use(errorHandler);
