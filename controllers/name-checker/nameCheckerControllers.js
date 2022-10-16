@@ -93,6 +93,7 @@ export const checkNamesController = async (req, res) => {
           );
 
           console.log(
+            platform,
             getUsernameStatus(
               platforms[platform],
               formatResponse(queryUsernameResponse)

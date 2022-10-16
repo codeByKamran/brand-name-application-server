@@ -17,10 +17,10 @@ export const getProfileURL = (username, url, urlProbe) => {
 export const formatResponse = (res) => {
   let response = {};
 
-  response.status = res.status;
-  response.statusText = res.statusText;
-  // response.headers = res.headers;
-  //   response.data = res.data;
+  response.status = res?.status;
+  response.statusText = res?.statusText;
+  // response.headers = res?.headers;
+  //   response.data = res?.data;
 
   return response;
 };
