@@ -1,5 +1,5 @@
 import express from "express";
-import { userRoles } from "../config/userRoles.js";
+import { userRoles } from "../../config/userRoles.js";
 import {
   addSnippet,
   deleteSnippet,
@@ -8,8 +8,8 @@ import {
   getSnippets,
   getSnippetsByLabel,
   updateSnippet,
-} from "../controllers/snippetsController.js";
-import verifyRoles from "../middlewares/verifyRoles.js";
+} from "../../controllers/snippetsController.js";
+import verifyRoles from "../../middlewares/verifyRoles.js";
 const snippetsRouter = express.Router();
 
 // Routes
