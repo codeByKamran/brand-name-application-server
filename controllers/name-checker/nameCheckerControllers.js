@@ -3,6 +3,7 @@ import { platforms } from "../../lib/static/platforms.js";
 import {
   formatResponse,
   getProfileURL,
+  getUsernameStatus,
   isValidUsername,
 } from "../../utils/name-checker/index.js";
 
@@ -18,33 +19,88 @@ export const checkNamesController = async (req, res) => {
       platforms[platform].url,
       platforms[platform].urlProbe
     );
+
+    const platformPorfLEURLClaimed = getProfileURL(
+      platforms[platform].username_claimed,
+      platforms[platform].url,
+      platforms[platform].urlProbe
+    );
+
+    const platformPorfLEURLUnclaimed = getProfileURL(
+      platforms[platform].username_unclaimed,
+      platforms[platform].url,
+      platforms[platform].urlProbe
+    );
+
     if (isValidUsername(username, platforms[platform].regexCheck)) {
-      axiosDefault
-        .get(platformProfileURL, {
+      function checkQueryUsername() {
+        return axiosDefault.get(platformProfileURL, {
           headers: platform.headers || headers,
           maxRedirects: 0,
-        })
-        .then((res) => {
-          // Assumption 1: Looks unavailable
-          // TODO: Perform checks based on platform AVAILABILE, UNAVAILABILE, and GLOBAL response
-          // TODO: Send response to Client once sure
+        });
+      }
 
-          console.log(`>>> ${platform} Response:`, formatResponse(res));
+      function checkClaimedUsername() {
+        return axiosDefault.get(platformPorfLEURLClaimed, {
+          headers: platform.headers || headers,
+          maxRedirects: 0,
+        });
+      }
+
+      function checkUnclaimedUsername() {
+        return axiosDefault.get(platformPorfLEURLUnclaimed, {
+          headers: platform.headers || headers,
+          maxRedirects: 0,
+        });
+      }
+
+      Promise.allSettled([
+        checkQueryUsername(),
+        checkClaimedUsername(),
+        checkUnclaimedUsername(),
+      ])
+        .then((results) => {
+          let queryUsernameResponse = null;
+          let claimedUsernameResponse = null;
+          let unclaimedUsernameResponse = null;
+
+          if (results[0].status === "fulfilled") {
+            queryUsernameResponse = results[0].value;
+          } else {
+            queryUsernameResponse = results[0].reason.response;
+          }
+
+          if (results[1].status === "fulfilled") {
+            claimedUsernameResponse = results[1].value;
+          } else {
+            claimedUsernameResponse = results[1].reason.response;
+          }
+
+          if (results[2].status === "fulfilled") {
+            unclaimedUsernameResponse = results[2].value;
+          } else {
+            unclaimedUsernameResponse = results[2].reason.response;
+          }
+
+          console.log("Query Username", formatResponse(queryUsernameResponse));
+          console.log(
+            "Claimed Username",
+            formatResponse(claimedUsernameResponse)
+          );
+          console.log(
+            "Unclaimed Username",
+            formatResponse(unclaimedUsernameResponse)
+          );
+
+          console.log(
+            getUsernameStatus(
+              platforms[platform],
+              formatResponse(queryUsernameResponse)
+            )
+          );
         })
         .catch((err) => {
-          // Assumption 1: Looks AVAILABILE
-          // Reading 1: Top Error Responses are 404, 403, 999(Linkedin), read ECONNRESET (Instagram, Google Play Store)
-          // TODO: Perform checks based on platform AVAILABILE, UNAVAILABILE, and GLOBAL response
-          // TODO: Send response to Client once sure
-
-          if (err.response?.status) {
-            console.log(`${platform} Error`, {
-              ...formatResponse(err.response),
-              errorMsg: err.message,
-            });
-          } else {
-            console.log(`${platform} Error Message`, err.message);
-          }
+          console.log(err);
         });
     } else {
       console.log(`Invalid Username for ${platform}`);

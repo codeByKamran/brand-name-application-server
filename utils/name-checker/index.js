@@ -24,3 +24,59 @@ export const formatResponse = (res) => {
 
   return response;
 };
+
+export const getUsernameStatus = (platform, response = []) => {
+  if (platform.errorType === "message") {
+    // youtube
+
+    if (platform?.availableMsgs.includes(response.statusText)) {
+      // AVAILABLE
+      if (platform?.availableStatusCodes.includes(response.status)) {
+        // double-check - AVAILABLE
+        return { available: true, checks: 2, platform: platform.platform };
+      } else {
+        return { available: true, checks: 1, platform: platform.platform };
+      }
+    } else {
+      // TAKEN
+      if (platform?.takenMsgs.includes(response.statusText)) {
+        // double-check - TAKEN
+        if (platform?.takenStatusCodes.includes(response.status)) {
+          // triple-check - TAKEN
+          return { available: false, checks: 3, platform: platform.platform };
+        } else {
+          return { available: false, checks: 2, platform: platform.platform };
+        }
+      } else {
+        return { available: false, checks: 1, platform: platform.platform };
+      }
+    }
+  }
+
+  if (platform.errorType === "status_code") {
+    // facebook
+
+    if (platform?.availableStatusCodes.includes(response.status)) {
+      // AVAILABLE
+      if (platform?.availableMsgs.includes(response.statusText)) {
+        // double-check - AVAILABLE
+        return { available: true, checks: 2 };
+      } else {
+        return { available: true, checks: 1 };
+      }
+    } else {
+      // TAKEN
+      if (platform?.takenStatusCodes.includes(response.status)) {
+        // double-check - TAKEN
+        if (platform?.takenMsgs.includes(response.statusText)) {
+          // tripple-check - TAKEN
+          return { available: false, checks: 3 };
+        } else {
+          return { available: false, checks: 2 };
+        }
+      } else {
+        return { available: false, checks: 1 };
+      }
+    }
+  }
+};
