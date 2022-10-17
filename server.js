@@ -32,9 +32,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User Disconnected");
   });
-  socket.on("name_check_request", (payload) => {
-    console.log("Name Check Event Detected", payload);
-  });
 });
 
 // connecting to mongo
