@@ -33,8 +33,8 @@ export const formatResponse = (res) => {
 
 export const getUsernameStatus = (platform, response = []) => {
   if (platform.errorType === "message") {
-    // YouTube
     console.log(response?.data);
+    // YouTube
     if (response?.data?.includes(platform.availableContentSearch)) {
       // AVAILABLE - Error message present in returned page content
       if (platform?.availableStatusTexts.includes(response.statusText)) {
@@ -61,6 +61,17 @@ export const getUsernameStatus = (platform, response = []) => {
       } else {
         return { available: false, checks: 1, platform: platform.platform };
       }
+    }
+  }
+
+  if (platform.errorType === "message_taken") {
+    console.log(response?.data);
+    if (response?.data?.includes(platform.takenContentSearch)) {
+      //  TAKEN
+      return { available: false, checks: 1, platform: platform.platform };
+    } else {
+      // AVAILABLE
+      return { available: true, checks: 1, platform: platform.platform };
     }
   }
 

@@ -29,7 +29,7 @@ const logEvents = async (message, logName) => {
 
 export default logEvents;
 
-export const logger = (req, res, next) => {
+export const requestsLoggers = (req, res, next) => {
   logEvents(
     `${req.method}\t${req.headers.origin || req.headers.host}\t${req.url}\n`,
     "requestsLog.txt"

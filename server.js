@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
 
-import { logger } from "./middlewares/logEvents.js";
+import { requestsLoggers } from "./middlewares/logEvents.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { corOptions } from "./config/cors.js";
 
@@ -45,8 +45,8 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-// logger middleware
-app.use(logger);
+// requestsLoggers middleware
+app.use(requestsLoggers);
 
 // Routes
 // Test Route
