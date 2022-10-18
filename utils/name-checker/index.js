@@ -50,7 +50,7 @@ export const getUsernameStatus = (platform, response = []) => {
       }
     } else {
       // TAKEN - Error message not present in returned page content
-      if (platform?.takenMsgs.includes(response.statusText)) {
+      if (platform?.takenStatusTexts.includes(response.statusText)) {
         // TAKEN - Double Check - Status messages matched
         if (platform?.takenStatusCodes.includes(response.status)) {
           // TAKEN - Tripple Check - Status codes matched
@@ -90,7 +90,7 @@ export const getUsernameStatus = (platform, response = []) => {
       // TAKEN
       if (platform?.takenStatusCodes.includes(response.status)) {
         // double-check - TAKEN
-        if (platform?.takenMsgs.includes(response.statusText)) {
+        if (platform?.takenStatusTexts.includes(response.statusText)) {
           // tripple-check - TAKEN
           return { available: false, checks: 3, platform: platform.platform };
         } else {

@@ -44,21 +44,21 @@ export const checkNamesController = async (req, res) => {
       function checkQueryUsername() {
         return axiosDefault.get(platformProfileURL, {
           headers: requestHeaders,
-          maxRedirects: 0,
+          // maxRedirects: 0,
         });
       }
 
       function checkClaimedUsername() {
         return axiosDefault.get(platformPorfileURLClaimed, {
           headers: requestHeaders,
-          maxRedirects: 0,
+          // maxRedirects: 0,
         });
       }
 
       function checkUnclaimedUsername() {
         return axiosDefault.get(platformPorfileURLUnclaimed, {
           headers: requestHeaders,
-          maxRedirects: 0,
+          // maxRedirects: 0,
         });
       }
 
