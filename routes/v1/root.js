@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import { logsClearController } from "../../controllers/name-checker/logsClearControllers.js";
 const rootRouter = express.Router();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,11 +12,13 @@ rootRouter.route("/initiate").get((req, res) => {
 });
 
 rootRouter.route("/requestsLogs").get((req, res) => {
-  res.sendFile(path.join(__dirname, "..", "logs", "requestsLog.txt"));
+  res.sendFile(path.join(__dirname, "..", "..", "logs", "requestsLog.txt"));
 });
 
+rootRouter.route("/requestsLogs/clear").get(logsClearController);
+
 rootRouter.route("/errorLogs").get((req, res) => {
-  res.sendFile(path.join(__dirname, "..", "logs", "errorLogs.txt"));
+  res.sendFile(path.join(__dirname, "..", "..", "logs", "errorLogs.txt"));
 });
 
 export default rootRouter;
