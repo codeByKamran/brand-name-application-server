@@ -38,27 +38,27 @@ export const checkNamesController = async (req, res) => {
       let currentTime = performance.now();
 
       const requestHeaders = platform.headers
-        ? { ...platform.headers, ...headers }
+        ? { ...platform.headers }
         : headers;
 
       function checkQueryUsername() {
         return axiosDefault.get(platformProfileURL, {
           headers: requestHeaders,
-          // maxRedirects: 0,
+          maxRedirects: platform.errorType === "response_url" && 0,
         });
       }
 
       function checkClaimedUsername() {
         return axiosDefault.get(platformPorfileURLClaimed, {
           headers: requestHeaders,
-          // maxRedirects: 0,
+          maxRedirects: platform.errorType === "response_url" && 0,
         });
       }
 
       function checkUnclaimedUsername() {
         return axiosDefault.get(platformPorfileURLUnclaimed, {
           headers: requestHeaders,
-          // maxRedirects: 0,
+          maxRedirects: platform.errorType === "response_url" && 0,
         });
       }
 

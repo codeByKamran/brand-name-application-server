@@ -1,2 +1,4 @@
 Faulty
-Gitlab
+Tiktok
+Instagram - too many requests - true
+Tinder - true
