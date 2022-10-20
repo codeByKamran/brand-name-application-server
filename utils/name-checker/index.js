@@ -43,12 +43,24 @@ export const getUsernameStatus = (platform, response) => {
           // AVAILABLE - Double Check - Status messages matched
           if (platform?.availableStatusCodes.includes(response.status)) {
             // AVAILABLE - Tripple Check - Status Codes matched
-            return { available: true, checks: 3, platform: platform.platform };
+            return {
+              available: true,
+              checks: 3,
+              platform: platform.platformCode,
+            };
           } else {
-            return { available: true, checks: 2, platform: platform.platform };
+            return {
+              available: true,
+              checks: 2,
+              platform: platform.platformCode,
+            };
           }
         } else {
-          return { available: true, checks: 1, platform: platform.platform };
+          return {
+            available: true,
+            checks: 1,
+            platform: platform.platformCode,
+          };
         }
       } else {
         // TAKEN - Error message not present in returned page content
@@ -56,12 +68,24 @@ export const getUsernameStatus = (platform, response) => {
           // TAKEN - Double Check - Status messages matched
           if (platform?.takenStatusCodes.includes(response.status)) {
             // TAKEN - Tripple Check - Status codes matched
-            return { available: false, checks: 3, platform: platform.platform };
+            return {
+              available: false,
+              checks: 3,
+              platform: platform.platformCode,
+            };
           } else {
-            return { available: false, checks: 2, platform: platform.platform };
+            return {
+              available: false,
+              checks: 2,
+              platform: platform.platformCode,
+            };
           }
         } else {
-          return { available: false, checks: 1, platform: platform.platform };
+          return {
+            available: false,
+            checks: 1,
+            platform: platform.platformCode,
+          };
         }
       }
     }
@@ -70,10 +94,10 @@ export const getUsernameStatus = (platform, response) => {
       // console.log(response?.data);
       if (response?.data?.includes(platform.takenContentSearch)) {
         //  TAKEN
-        return { available: false, checks: 1, platform: platform.platform };
+        return { available: false, checks: 1, platform: platform.platformCode };
       } else {
         // AVAILABLE
-        return { available: true, checks: 1, platform: platform.platform };
+        return { available: true, checks: 1, platform: platform.platformCode };
       }
     }
 
@@ -84,9 +108,17 @@ export const getUsernameStatus = (platform, response) => {
         // AVAILABLE
         if (platform?.availableStatusTexts.includes(response.statusText)) {
           // double-check - AVAILABLE
-          return { available: true, checks: 2, platform: platform.platform };
+          return {
+            available: true,
+            checks: 2,
+            platform: platform.platformCode,
+          };
         } else {
-          return { available: true, checks: 1, platform: platform.platform };
+          return {
+            available: true,
+            checks: 1,
+            platform: platform.platformCode,
+          };
         }
       } else {
         // TAKEN
@@ -94,12 +126,24 @@ export const getUsernameStatus = (platform, response) => {
           // double-check - TAKEN
           if (platform?.takenStatusTexts.includes(response.statusText)) {
             // tripple-check - TAKEN
-            return { available: false, checks: 3, platform: platform.platform };
+            return {
+              available: false,
+              checks: 3,
+              platform: platform.platformCode,
+            };
           } else {
-            return { available: false, checks: 2, platform: platform.platform };
+            return {
+              available: false,
+              checks: 2,
+              platform: platform.platformCode,
+            };
           }
         } else {
-          return { available: false, checks: 1, platform: platform.platform };
+          return {
+            available: false,
+            checks: 1,
+            platform: platform.platformCode,
+          };
         }
       }
     }
@@ -107,10 +151,10 @@ export const getUsernameStatus = (platform, response) => {
     if (platform.errorType === "response") {
       if (response.data.length < 1) {
         // AVAILABLE
-        return { available: true, checks: 1, platform: platform.platform };
+        return { available: true, checks: 1, platform: platform.platformCode };
       } else {
         // TAKEN
-        return { available: false, checks: 1, platform: platform.platform };
+        return { available: false, checks: 1, platform: platform.platformCode };
       }
     }
 
@@ -119,14 +163,20 @@ export const getUsernameStatus = (platform, response) => {
       if (response.status >= 200 && response.status < 300) {
         // TAKEN
         console.log("fullfilled");
-        return { available: false, checks: 1, platform: platform.platform };
+        return { available: false, checks: 1, platform: platform.platformCode };
       } else {
         // AVAILABLE
         console.log("Lets go");
-        return { available: true, checks: 1, platform: platform.platform };
+        return { available: true, checks: 1, platform: platform.platformCode };
       }
     }
   } else {
-    return { available: false, failed: true, platform: platform.platform };
+    // No Status Found in Response - Failed Response
+    if (response.invalid) {
+      // Username is invalid
+      return { failed: true, invalid: true, platform: platform.platformCode };
+    }
+
+    return { available: false, failed: true, platform: platform.platformCode };
   }
 };

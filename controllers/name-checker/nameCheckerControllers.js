@@ -1,6 +1,7 @@
 import { performance } from "perf_hooks";
 import { axiosDefault, headers } from "../../axios/index.js";
 import { platforms as platformsAll } from "../../lib/static/platforms.js";
+import { io } from "../../server.js";
 import {
   formatResponse,
   getProfileURL,
@@ -44,7 +45,7 @@ export const checkNamesController = async (req, res) => {
       );
 
       if (isValidUsername(username, platform.regexCheck)) {
-        // check for validatity of username for particular platform
+        // check for validatity of username for platform
         // no need for further checks
         let currentTime = performance.now();
 
@@ -133,12 +134,22 @@ export const checkNamesController = async (req, res) => {
               platform.platform + " Result",
               getUsernameStatus(platform, formatResponse(queryUsernameResponse))
             );
+
+            io.emit(
+              "platform_status_update",
+              getUsernameStatus(platform, formatResponse(queryUsernameResponse))
+            );
           })
           .catch((err) => {
             console.log(err);
           });
       } else {
+        // Invalid username for this platform
         console.log(`Invalid Username for ${platform.platform}`);
+        io.emit(
+          "platform_status_update",
+          getUsernameStatus(platform, { invalid: true })
+        );
       }
     }
     res.sendStatus(200);

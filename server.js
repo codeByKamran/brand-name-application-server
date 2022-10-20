@@ -32,6 +32,9 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User Disconnected");
   });
+  const sendMessage = (data) => {
+    socket.emit("platform_status_update", data);
+  };
 });
 
 // connecting to mongo
