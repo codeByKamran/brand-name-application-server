@@ -10,6 +10,10 @@ import {
 
 export const checkNamesController = async (req, res) => {
   const { query: username } = req.params;
+  const { platforms, domains } = req.body;
+  console.log(username);
+  console.log(platforms);
+  console.log(domains);
 
   for (const platformKey in platforms) {
     const platform = platforms[platformKey];
