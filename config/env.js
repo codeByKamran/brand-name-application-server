@@ -9,6 +9,8 @@ export default {
       : process.env.LOCAL_MONGO_URL,
   ACCESS_TOKEN_SECRET_KEY: process.env.ACCESS_TOKEN_SECRET_KEY,
   REFRESH_TOKEN_SECRET_KEY: process.env.REFRESH_TOKEN_SECRET_KEY,
+  GODADDY_API_KEY: process.env.GODADDY_API_KEY,
+  GODADDY_SECRET: process.env.GODADDY_SECRET,
   PUSHER_ID: process.env.PUSHER_ID,
   PUSHER_KEY: process.env.PUSHER_KEY,
   PUSHER_SECRET: process.env.PUSHER_SECRET,
