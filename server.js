@@ -18,6 +18,7 @@ import credentials from "./middlewares/credentials.js";
 import connectMongo from "./db/mongo.js";
 import { socketIOOptions } from "./config/socket.js";
 import nameCheckRouter from "./routes/v1/name-checker/check.js";
+import domainCheckRouter from "./routes/v1/domain-checker/check.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,6 +60,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/", rootRouter);
 app.use("/api/v1/name-checker/", nameCheckRouter);
+app.use("/api/v1/domain-checker/", domainCheckRouter);
 
 // Listening to Database
 mongoose.connection.once("open", () => {

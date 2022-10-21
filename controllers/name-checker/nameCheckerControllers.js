@@ -16,6 +16,7 @@ export const checkNamesController = async (req, res) => {
   console.log("Platforms to check", platformsToSearch);
   console.log("Domains to check", domains);
 
+  // filter platformsto search
   const filteredPlatformsToSearch = req.body.all
     ? platformsAll
     : platformsAll.filter((platform) =>
@@ -23,36 +24,45 @@ export const checkNamesController = async (req, res) => {
       );
 
   if (filteredPlatformsToSearch.length === 0) {
+    // no platforms specified to search
     res.status(400).json({ message: "No Target Platforms" });
   } else {
+    // platforms to search specified - starting search
     for (const platform of filteredPlatformsToSearch) {
-      const platformProfileURL = getProfileURL(
-        username,
-        platform.url,
-        platform.urlProbe
-      );
-
-      const platformPorfileURLClaimed = getProfileURL(
-        platform.username_claimed,
-        platform.url,
-        platform.urlProbe
-      );
-
-      const platformPorfileURLUnclaimed = getProfileURL(
-        platform.username_unclaimed,
-        platform.url,
-        platform.urlProbe
-      );
+      // iterating through list of platforms
 
       if (isValidUsername(username, platform.regexCheck)) {
         // check for validatity of username for platform
         // no need for further checks
+
+        // query profile url
+        const platformProfileURL = getProfileURL(
+          username,
+          platform.url,
+          platform.urlProbe
+        );
+
+        // query profile url
+        const platformPorfileURLClaimed = getProfileURL(
+          platform.username_claimed,
+          platform.url,
+          platform.urlProbe
+        );
+
+        // query profile url
+        const platformPorfileURLUnclaimed = getProfileURL(
+          platform.username_unclaimed,
+          platform.url,
+          platform.urlProbe
+        );
+
+        // saving current time to calculate request time (aka... response time - latency)
         let currentTime = performance.now();
 
-        const requestHeaders = platform.headers
-          ? { ...platform.headers }
-          : headers;
+        // setting request headers
+        const requestHeaders = { ...headers, ...platform?.headers };
 
+        // query username request
         function checkQueryUsername() {
           return axiosDefault.get(platformProfileURL, {
             headers: requestHeaders,
@@ -60,6 +70,7 @@ export const checkNamesController = async (req, res) => {
           });
         }
 
+        // claimed username request
         function checkClaimedUsername() {
           return axiosDefault.get(platformPorfileURLClaimed, {
             headers: requestHeaders,
@@ -67,6 +78,7 @@ export const checkNamesController = async (req, res) => {
           });
         }
 
+        // unclaimed username request
         function checkUnclaimedUsername() {
           return axiosDefault.get(platformPorfileURLUnclaimed, {
             headers: requestHeaders,
@@ -117,7 +129,7 @@ export const checkNamesController = async (req, res) => {
             console.log(platform.platform + " Query", {
               ...formatResponse(queryUsernameResponse),
               url: platformProfileURL,
-              // data: null,
+              data: null,
             });
             console.log(platform.platform + " Claimed", {
               ...formatResponse(claimedUsernameResponse),
