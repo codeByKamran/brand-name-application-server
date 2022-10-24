@@ -16,7 +16,7 @@ export const checkNamesController = async (req, res) => {
   console.log("Platforms to check", platformsToSearch);
   console.log("Domains to check", domains);
 
-  // filter platformsto search
+  // filter platforms to search
   const filteredPlatformsToSearch = req.body.all
     ? platformsAll
     : platformsAll.filter((platform) =>
@@ -43,18 +43,18 @@ export const checkNamesController = async (req, res) => {
         );
 
         // query profile url
-        const platformPorfileURLClaimed = getProfileURL(
-          platform.username_claimed,
-          platform.url,
-          platform.urlProbe
-        );
+        // const platformPorfileURLClaimed = getProfileURL(
+        //   platform.username_claimed,
+        //   platform.url,
+        //   platform.urlProbe
+        // );
 
         // query profile url
-        const platformPorfileURLUnclaimed = getProfileURL(
-          platform.username_unclaimed,
-          platform.url,
-          platform.urlProbe
-        );
+        // const platformPorfileURLUnclaimed = getProfileURL(
+        //   platform.username_unclaimed,
+        //   platform.url,
+        //   platform.urlProbe
+        // );
 
         // saving current time to calculate request time (aka... response time - latency)
         let currentTime = performance.now();
@@ -71,25 +71,25 @@ export const checkNamesController = async (req, res) => {
         }
 
         // claimed username request
-        function checkClaimedUsername() {
-          return axiosDefault.get(platformPorfileURLClaimed, {
-            headers: requestHeaders,
-            maxRedirects: platform.errorType === "response_url" && 0,
-          });
-        }
+        // function checkClaimedUsername() {
+        //   return axiosDefault.get(platformPorfileURLClaimed, {
+        //     headers: requestHeaders,
+        //     maxRedirects: platform.errorType === "response_url" && 0,
+        //   });
+        // }
 
         // unclaimed username request
-        function checkUnclaimedUsername() {
-          return axiosDefault.get(platformPorfileURLUnclaimed, {
-            headers: requestHeaders,
-            maxRedirects: platform.errorType === "response_url" && 0,
-          });
-        }
+        // function checkUnclaimedUsername() {
+        //   return axiosDefault.get(platformPorfileURLUnclaimed, {
+        //     headers: requestHeaders,
+        //     maxRedirects: platform.errorType === "response_url" && 0,
+        //   });
+        // }
 
         Promise.allSettled([
           checkQueryUsername(),
-          checkClaimedUsername(),
-          checkUnclaimedUsername(),
+          // checkClaimedUsername(),
+          // checkUnclaimedUsername(),
         ])
           .then((results) => {
             const requestDuration = +(performance.now() - currentTime).toFixed(
@@ -108,39 +108,39 @@ export const checkNamesController = async (req, res) => {
               };
             }
 
-            if (results[1].status === "fulfilled") {
-              claimedUsernameResponse = results[1].value;
-            } else {
-              claimedUsernameResponse = {
-                ...results[1].reason.response,
-                requestDuration,
-              };
-            }
+            // if (results[1].status === "fulfilled") {
+            //   claimedUsernameResponse = results[1].value;
+            // } else {
+            //   claimedUsernameResponse = {
+            //     ...results[1].reason.response,
+            //     requestDuration,
+            //   };
+            // }
 
-            if (results[2].status === "fulfilled") {
-              unclaimedUsernameResponse = results[2].value;
-            } else {
-              unclaimedUsernameResponse = {
-                ...results[2].reason.response,
-                requestDuration,
-              };
-            }
+            // if (results[2].status === "fulfilled") {
+            //   unclaimedUsernameResponse = results[2].value;
+            // } else {
+            //   unclaimedUsernameResponse = {
+            //     ...results[2].reason.response,
+            //     requestDuration,
+            //   };
+            // }
 
             console.log(platform.platform + " Query", {
               ...formatResponse(queryUsernameResponse),
               url: platformProfileURL,
               // data: null,
             });
-            console.log(platform.platform + " Claimed", {
-              ...formatResponse(claimedUsernameResponse),
-              url: platformPorfileURLClaimed,
-              data: null,
-            });
-            console.log(platform.platform + " Unclaimed", {
-              ...formatResponse(unclaimedUsernameResponse),
-              url: platformPorfileURLUnclaimed,
-              data: null,
-            });
+            // console.log(platform.platform + " Claimed", {
+            //   ...formatResponse(claimedUsernameResponse),
+            //   url: platformPorfileURLClaimed,
+            //   data: null,
+            // });
+            // console.log(platform.platform + " Unclaimed", {
+            //   ...formatResponse(unclaimedUsernameResponse),
+            //   url: platformPorfileURLUnclaimed,
+            //   data: null,
+            // });
 
             console.log(
               platform.platform + " Result",

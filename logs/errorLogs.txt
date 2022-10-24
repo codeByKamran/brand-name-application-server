@@ -45,3 +45,4 @@
     --> starting at object with constructor 'Socket'
     |     property 'parser' -> object with constructor 'HTTPParser'
     --- property 'socket' closes the circle
+20221024	16:43:40	ea085d4a-eacc-4179-9e16-89c9d8399041	ReferenceError: username is not defined
