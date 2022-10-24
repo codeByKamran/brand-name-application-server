@@ -129,7 +129,7 @@ export const checkNamesController = async (req, res) => {
             console.log(platform.platform + " Query", {
               ...formatResponse(queryUsernameResponse),
               url: platformProfileURL,
-              data: null,
+              // data: null,
             });
             console.log(platform.platform + " Claimed", {
               ...formatResponse(claimedUsernameResponse),
