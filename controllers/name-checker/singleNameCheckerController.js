@@ -23,8 +23,12 @@ export const snapchatNameChecker = async (req, res) => {
   axiosDefault
     .post(url, {}, { headers: headers })
     .then((response) => {
+      io.emit(
+        "platform_status_update",
+        formatSpecialPlatformStatus("snapchat", response.data.value)
+      );
       res.status(200).json({
-        result: formatSpecialPlatformStatus("snpachat", response.data.value),
+        result: formatSpecialPlatformStatus("snapchat", response.data.value),
       });
     })
     .catch((err) => {
