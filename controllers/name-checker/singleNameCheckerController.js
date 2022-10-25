@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+import puppeteer from "puppeteer";
 import { axiosDefault } from "../../axios/index.js";
 import { io } from "../../server.js";
 import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
@@ -73,5 +73,5 @@ export const instagramNameChecker = async (req, res) => {
     }
   }
 
-  res.status(200).json({available: checkAvailability(instagramUsername)})
+  res.status(200).json({ available: checkAvailability(instagramUsername) });
 };
