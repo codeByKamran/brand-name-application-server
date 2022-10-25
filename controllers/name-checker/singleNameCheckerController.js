@@ -20,9 +20,9 @@ export const snapchatNameChecker = async (req, res) => {
 
   const url = `https://accounts.snapchat.com/accounts/get_username_suggestions?requested_username=${snapchatUsername}&xsrf_token=${xsrf_token}`;
 
-  axiosDefault.post(url, {}, { headers: headers }).then((res) => {
-    console.log(res);
-    res.status(200).json({ res });
+  axiosDefault.post(url, {}, { headers: headers }).then((response) => {
+    console.log(response);
+    res.status(200).json({ response });
   });
 };
 
