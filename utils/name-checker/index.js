@@ -159,14 +159,11 @@ export const getUsernameStatus = (platform, response) => {
     }
 
     if (platform.errorType === "response_url") {
-      console.log(response.status);
       if (response.status >= 200 && response.status < 300) {
         // TAKEN
-        console.log("fullfilled");
         return { available: false, checks: 1, platform: platform.platformCode };
       } else {
         // AVAILABLE
-        console.log("Lets go");
         return { available: true, checks: 1, platform: platform.platformCode };
       }
     }
@@ -178,5 +175,18 @@ export const getUsernameStatus = (platform, response) => {
     }
 
     return { available: false, failed: true, platform: platform.platformCode };
+  }
+};
+
+export const formatSpecialPlatformStatus = (platform, response) => {
+  if (platform === "snapchat") {
+    if (response.status >= 200 && response.status < 300) {
+      // response status in range of 2XX
+      // Taken
+      return { available: false, checks: 1, platform: platform };
+    } else if (response.status === 404 || response.status === 301) {
+      // 404 - Not Found || 301 - Moved Permanently - Mean Available
+      return { available: true, checks: 1, platform: platform };
+    }
   }
 };

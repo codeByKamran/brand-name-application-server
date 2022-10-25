@@ -1,5 +1,8 @@
 import { axiosDefault } from "../../axios/index.js";
-import { formatResponse } from "../../utils/name-checker/index.js";
+import {
+  formatResponse,
+  formatSpecialPlatformStatus,
+} from "../../utils/name-checker/index.js";
 
 export const snapchatNameChecker = async (req, res) => {
   const { query: snapchatUsername } = req.params;
@@ -33,12 +36,15 @@ export const snapchatNameChecker = async (req, res) => {
       cookies
     )
     .then((response) => {
-      console.log({ response });
-      const resultTemp = formatResponse(response);
-      response.status(200).json({ result: resultTemp });
+      return res.status(200).json({
+        result: formatSpecialPlatformStatus(
+          "snapchat",
+          formatResponse(response)
+        ),
+      });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ message: err.message });
+      return res.status(500).json({ message: err.message });
     });
 };
