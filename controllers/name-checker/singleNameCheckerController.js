@@ -32,3 +32,39 @@ export const snapchatNameChecker = async (req, res) => {
       res.status(500).json({ message: err.message });
     });
 };
+
+export const instagramNameChecker = async (req, res) => {
+  const { query: instagramUsername } = req.params;
+  console.log("Snapchat username", snapchatUsername);
+
+  const headers = {
+    "user-agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+  };
+
+  const url = `https://www.instagram.com/${instagramUsername}`;
+
+  axiosDefault
+    .get(url, { headers: headers })
+    .then((response) => {
+      console.log(response);
+      return res
+        .status(200)
+        .json({
+          status: response?.status,
+          statusText: response?.statusText,
+          data: response?.data,
+        });
+      // io.emit(
+      //   "platform_status_update",
+      //   formatSpecialPlatformStatus("snapchat", response.data.value)
+      // );
+      // res.status(200).json({
+      //   result: formatSpecialPlatformStatus("snapchat", response.data.value),
+      // });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
+};
