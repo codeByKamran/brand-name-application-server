@@ -38,14 +38,14 @@ export const instagramNameChecker = async (req, res) => {
   console.log("Instagram username", instagramUsername);
 
   const headers = {
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
+    "User-Agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:55.0) Gecko/20100101 Firefox/55.0",
   };
 
   const url = `https://www.instagram.com/${instagramUsername}`;
 
   axiosDefault
-    .get(url, { headers: headers })
+    .post(url, { headers: headers })
     .then((response) => {
       console.log(response);
       return res.status(200).json({
