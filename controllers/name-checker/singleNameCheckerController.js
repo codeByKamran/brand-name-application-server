@@ -26,7 +26,7 @@ export const snapchatNameChecker = async (req, res) => {
   };
   const xsrf_token = "JxVkpuY3VbHfOFagfT0csQ";
   const cookies = { xsrf_token: xsrf_token };
-  const data = { requested_username: "elonmusk", xsrf_token: xsrf_token };
+  const data = { requested_username: snapchatUsername, xsrf_token: xsrf_token };
 
   axiosDefault
     .post(
@@ -36,6 +36,7 @@ export const snapchatNameChecker = async (req, res) => {
       cookies
     )
     .then((response) => {
+      console.log(formatResponse(response));
       return res.status(200).json({
         result: formatSpecialPlatformStatus(
           "snapchat",
