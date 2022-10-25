@@ -3,14 +3,14 @@ import {
   formatResponse,
   formatSpecialPlatformStatus,
 } from "../../utils/name-checker/index.js";
-import { WebhookClient } from "discord.js";
+// import { WebhookClient } from "discord.js";
+import { errorHandler } from "../../middlewares/errorHandler.js";
 
 export const snapchatNameChecker = async (req, res) => {
   const { query: snapchatUsername } = req.params;
   console.log("Snapchat username", snapchatUsername);
 
   const xsrf_token = "JxVkpuY3VbHfOFagfT0csQ";
-  const webhookClient = new WebhookClient({ id: "", token: "" });
 
   const headers = {
     "User-Agent":
@@ -20,10 +20,16 @@ export const snapchatNameChecker = async (req, res) => {
 
   const url = `https://accounts.snapchat.com/accounts/get_username_suggestions?requested_username=${snapchatUsername}&xsrf_token=${xsrf_token}`;
 
-  axiosDefault.post(url, {}, { headers: headers }).then((response) => {
-    console.log(response);
-    res.status(200).json({ response });
-  });
+  axiosDefault
+    .post(url, {}, { headers: headers })
+    .then((response) => {
+      console.log(response);
+      res.status(200).json({ response });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
 };
 
 // export const snapchatNameChecker = async (req, res) => {
