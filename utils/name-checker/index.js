@@ -190,6 +190,7 @@ export const formatSpecialPlatformStatus = (platform, response) => {
       return {
         available: false,
         failed: true,
+        invalid: true,
         reason: "Username too long",
         statusCode: "TOO_LONG",
         platform: platform,
@@ -198,6 +199,7 @@ export const formatSpecialPlatformStatus = (platform, response) => {
       return {
         available: false,
         failed: true,
+        invalid: true,
         reason: "Username too short",
         statusCode: "TOO_SHORT",
         platform: platform,
