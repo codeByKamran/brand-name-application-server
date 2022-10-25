@@ -22,6 +22,7 @@ export const snapchatNameChecker = async (req, res) => {
 
   axiosDefault.post(url, {}, { headers: headers }).then((res) => {
     console.log(res);
+    res.status(200).json({ res });
   });
 };
 
