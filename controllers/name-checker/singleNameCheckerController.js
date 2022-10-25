@@ -36,7 +36,7 @@ export const snapchatNameChecker = async (req, res) => {
       cookies
     )
     .then((response) => {
-      console.log(formatResponse(response));
+      console.log(response);
       return res.status(200).json({
         result: formatSpecialPlatformStatus(
           "snapchat",
