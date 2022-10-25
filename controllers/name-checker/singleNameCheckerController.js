@@ -24,7 +24,9 @@ export const snapchatNameChecker = async (req, res) => {
     .post(url, {}, { headers: headers })
     .then((response) => {
       console.log(response);
-      res.status(200).json({ response });
+      console.log("data", response.data);
+      console.log("reference", response?.reference);
+      res.status(200).json({ result: response.data });
     })
     .catch((err) => {
       console.log(err);
