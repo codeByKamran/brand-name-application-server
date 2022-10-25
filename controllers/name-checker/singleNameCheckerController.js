@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+// import puppeteer from "puppeteer";
 import { axiosDefault } from "../../axios/index.js";
 import { io } from "../../server.js";
 import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
@@ -45,32 +45,33 @@ export const instagramNameChecker = async (req, res) => {
   };
 
   async function checkAvailability(username) {
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox"],
-    });
-    const page = await browser.newPage();
-    await page.goto(selectors.url, {
-      waitUntil: ["load", "domcontentloaded"],
-    });
+    // const browser = await puppeteer.launch({
+    //   args: ["--no-sandbox"],
+    // });
+    // const page = await browser.newPage();
+    // await page.goto(selectors.url, {
+    //   waitUntil: ["load", "domcontentloaded"],
+    // });
 
-    await page.waitForSelector(selectors.input);
-    await page.type(selectors.input, username);
-    await page.click("body");
+    // await page.waitForSelector(selectors.input);
+    // await page.type(selectors.input, username);
+    // await page.click("body");
 
-    try {
-      await page.waitForSelector(selectors.errorIcon, {
-        visible: true,
-        timeout: 250,
-      });
+    // try {
+    //   await page.waitForSelector(selectors.errorIcon, {
+    //     visible: true,
+    //     timeout: 250,
+    //   });
 
-      return false;
-    } catch (e) {
-      // page.waitForSelector will throw if element not found
-      console.log(e);
-      return true;
-    } finally {
-      await browser.close();
-    }
+    //   return false;
+    // } catch (e) {
+    //   // page.waitForSelector will throw if element not found
+    //   console.log(e);
+    //   return true;
+    // } finally {
+    //   await browser.close();
+    // }
+    return true;
   }
 
   res.status(200).json({ available: checkAvailability(instagramUsername) });
