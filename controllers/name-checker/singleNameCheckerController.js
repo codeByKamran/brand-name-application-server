@@ -36,7 +36,7 @@ export const snapchatNameChecker = async (req, res) => {
 
 export const instagramNameChecker = async (req, res) => {
   const { query: instagramUsername } = req.params;
-  console.log("Instagram username", instagramUsername);
+  console.log("Snapchat username", snapchatUsername);
 
   const selectors = {
     url: "https://www.instagram.com/",
@@ -53,6 +53,7 @@ export const instagramNameChecker = async (req, res) => {
     //   waitUntil: ["load", "domcontentloaded"],
     // });
 
+<<<<<<< HEAD
     // await page.waitForSelector(selectors.input);
     // await page.type(selectors.input, username);
     // await page.click("body");
@@ -75,4 +76,29 @@ export const instagramNameChecker = async (req, res) => {
   }
 
   res.status(200).json({ available: checkAvailability(instagramUsername) });
+=======
+  axiosDefault
+    .get(url, { headers: headers })
+    .then((response) => {
+      console.log(response);
+      return res
+        .status(200)
+        .json({
+          status: response?.status,
+          statusText: response?.statusText,
+          data: response?.data,
+        });
+      // io.emit(
+      //   "platform_status_update",
+      //   formatSpecialPlatformStatus("snapchat", response.data.value)
+      // );
+      // res.status(200).json({
+      //   result: formatSpecialPlatformStatus("snapchat", response.data.value),
+      // });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
+>>>>>>> parent of 1ab464c (instagram test 2)
 };
