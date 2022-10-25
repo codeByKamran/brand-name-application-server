@@ -35,7 +35,7 @@ export const snapchatNameChecker = async (req, res) => {
 
 export const instagramNameChecker = async (req, res) => {
   const { query: instagramUsername } = req.params;
-  console.log("Snapchat username", snapchatUsername);
+  console.log("Instagram username", instagramUsername);
 
   const headers = {
     "user-agent":
@@ -48,13 +48,11 @@ export const instagramNameChecker = async (req, res) => {
     .get(url, { headers: headers })
     .then((response) => {
       console.log(response);
-      return res
-        .status(200)
-        .json({
-          status: response?.status,
-          statusText: response?.statusText,
-          data: response?.data,
-        });
+      return res.status(200).json({
+        status: response?.status,
+        statusText: response?.statusText,
+        data: response?.data,
+      });
       // io.emit(
       //   "platform_status_update",
       //   formatSpecialPlatformStatus("snapchat", response.data.value)
