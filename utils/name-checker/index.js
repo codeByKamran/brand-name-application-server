@@ -180,13 +180,36 @@ export const getUsernameStatus = (platform, response) => {
 
 export const formatSpecialPlatformStatus = (platform, response) => {
   if (platform === "snapchat") {
-    if (response.status >= 200 && response.status < 300) {
-      // response status in range of 2XX
-      // Taken
+    if (response.status_code === "TAKEN") {
+      // TAKEN
       return { available: false, checks: 1, platform: platform };
-    } else if (response.status === 404 || response.status === 301) {
-      // 404 - Not Found || 301 - Moved Permanently - Mean Available
+    } else if (response.status_code === "OK") {
+      // AVAILABLE
       return { available: true, checks: 1, platform: platform };
+    } else if (response.status_code === "TOO_LONG") {
+      return {
+        available: false,
+        failed: true,
+        reason: "Username too long",
+        statusCode: "TOO_LONG",
+        platform: platform,
+      };
+    } else if (response.status_code === "TOO_SHORT") {
+      return {
+        available: false,
+        failed: true,
+        reason: "Username too short",
+        statusCode: "TOO_SHORT",
+        platform: platform,
+      };
+    } else {
+      return {
+        available: false,
+        failed: true,
+        reason: response.error_message,
+        statusCode: response.status_code,
+        platform: platform,
+      };
     }
   }
 };

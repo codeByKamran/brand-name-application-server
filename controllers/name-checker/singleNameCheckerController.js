@@ -23,10 +23,9 @@ export const snapchatNameChecker = async (req, res) => {
   axiosDefault
     .post(url, {}, { headers: headers })
     .then((response) => {
-      console.log(response);
-      console.log("data", response.data);
-      console.log("reference", response?.reference);
-      res.status(200).json({ result: response.data });
+      res.status(200).json({
+        result: formatSpecialPlatformStatus("snpachat", response.data.value),
+      });
     })
     .catch((err) => {
       console.log(err);
