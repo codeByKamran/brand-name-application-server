@@ -19,6 +19,7 @@ import connectMongo from "./db/mongo.js";
 import { socketIOOptions } from "./config/socket.js";
 import nameCheckRouter from "./routes/v1/name-checker/check.js";
 import domainCheckRouter from "./routes/v1/domain-checker/check.js";
+import singleNameCheckRouter from "./routes/v1/name-checker/single/check.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,9 +34,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User Disconnected");
   });
-  const sendMessage = (data) => {
-    socket.emit("platform_status_update", data);
-  };
 });
 
 // connecting to mongo
@@ -60,6 +58,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/", rootRouter);
 app.use("/api/v1/name-checker/", nameCheckRouter);
+app.use("/api/v1/name-checker/single", singleNameCheckRouter);
 app.use("/api/v1/domain-checker/", domainCheckRouter);
 
 // Listening to Database
