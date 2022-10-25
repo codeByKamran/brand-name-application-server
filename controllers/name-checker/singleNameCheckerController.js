@@ -1,4 +1,3 @@
-// import puppeteer from "puppeteer";
 import { axiosDefault } from "../../axios/index.js";
 import { io } from "../../server.js";
 import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
@@ -38,67 +37,5 @@ export const instagramNameChecker = async (req, res) => {
   const { query: instagramUsername } = req.params;
   console.log("Snapchat username", snapchatUsername);
 
-  const selectors = {
-    url: "https://www.instagram.com/",
-    input: "[name=username]",
-    errorIcon: "span.coreSpriteInputError",
-  };
-
-  async function checkAvailability(username) {
-    // const browser = await puppeteer.launch({
-    //   args: ["--no-sandbox"],
-    // });
-    // const page = await browser.newPage();
-    // await page.goto(selectors.url, {
-    //   waitUntil: ["load", "domcontentloaded"],
-    // });
-
-<<<<<<< HEAD
-    // await page.waitForSelector(selectors.input);
-    // await page.type(selectors.input, username);
-    // await page.click("body");
-
-    // try {
-    //   await page.waitForSelector(selectors.errorIcon, {
-    //     visible: true,
-    //     timeout: 250,
-    //   });
-
-    //   return false;
-    // } catch (e) {
-    //   // page.waitForSelector will throw if element not found
-    //   console.log(e);
-    //   return true;
-    // } finally {
-    //   await browser.close();
-    // }
-    return true;
-  }
-
-  res.status(200).json({ available: checkAvailability(instagramUsername) });
-=======
-  axiosDefault
-    .get(url, { headers: headers })
-    .then((response) => {
-      console.log(response);
-      return res
-        .status(200)
-        .json({
-          status: response?.status,
-          statusText: response?.statusText,
-          data: response?.data,
-        });
-      // io.emit(
-      //   "platform_status_update",
-      //   formatSpecialPlatformStatus("snapchat", response.data.value)
-      // );
-      // res.status(200).json({
-      //   result: formatSpecialPlatformStatus("snapchat", response.data.value),
-      // });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err.message });
-    });
->>>>>>> parent of 1ab464c (instagram test 2)
+  res.sendStatus(200);
 };
