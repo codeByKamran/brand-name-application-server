@@ -26,6 +26,7 @@
     "mongoose": "^6.2.3",
     "nodemon": "^2.0.20",
     "socket.io": "^4.5.2",
+    "tiktok-app-api": "^1.4.1",
     "uuid": "^8.3.2"
   },
   "engines": {
