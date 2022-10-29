@@ -43,51 +43,58 @@ export const instagramNameChecker = async (req, res) => {
   const { query: username } = req.params;
   console.log("Instagram username", username);
 
-  const selectors = {
-    url: "https://www.instagram.com/" + username,
-    availableContentIndicator: "Sorry, this page isn't available.",
+  // async function checkAvailability(str) {
+  //   const selectors = {
+  //     url: "https://www.instagram.com/" + str,
+  //     availableContentIndicator: "Sorry, this page isn't available.",
+  //   };
+  //   const browser = await puppeteer.launch({
+  //     args: ["--no-sandbox"],
+  //   });
+
+  //   const page = await browser.newPage();
+
+  //   await page.goto(selectors.url, {
+  //     waitUntil: ["load", "domcontentloaded"],
+  //   });
+
+  //   try {
+  //     const pageContent = await page.content();
+  //     if (pageContent.indexOf(selectors.availableContentIndicator) > -1) {
+  //       // mean present in content
+  //       return {
+  //         available: true,
+  //         platform: "instagram",
+  //         checks: 1,
+  //       };
+  //     }
+
+  //     return {
+  //       available: false,
+  //       platform: "instagram",
+  //       checks: 1,
+  //     };
+  //   } catch (e) {
+  //     console.log(e.message);
+  //     return {
+  //       available: false,
+  //       error: true,
+  //       message: e.message,
+  //       platform: "instagram",
+  //       checks: 1,
+  //     };
+  //   } finally {
+  //     await browser.close();
+  //   }
+  // }
+
+  // const result = await checkAvailability(username);
+
+  const result = {
+    available: false,
+    platform: "instagram",
+    checks: 1,
   };
-
-  async function checkAvailability(str) {
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox"],
-    });
-    const page = await browser.newPage();
-    await page.goto(selectors.url, {
-      waitUntil: ["load", "domcontentloaded"],
-    });
-
-    try {
-      const pageContent = await page.content();
-      if (pageContent.indexOf(selectors.availableContentIndicator) > -1) {
-        // mean present in content
-        return {
-          available: true,
-          platform: "instagram",
-          checks: 1,
-        };
-      }
-
-      return {
-        available: false,
-        platform: "instagram",
-        checks: 1,
-      };
-    } catch (e) {
-      console.log(e.message);
-      return {
-        available: false,
-        error: true,
-        message: e.message,
-        platform: "instagram",
-        checks: 1,
-      };
-    } finally {
-      await browser.close();
-    }
-  }
-
-  const result = await checkAvailability(username);
 
   io.emit("platform_status_update", result);
 
