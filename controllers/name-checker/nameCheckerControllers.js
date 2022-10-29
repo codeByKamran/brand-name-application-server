@@ -130,13 +130,11 @@ export const checkNamesController = async (req, res) => {
 
               if (results[0].status === "fulfilled") {
                 queryUsernameResponse = results[0].value;
-                console.log(results[0].value);
               } else {
                 queryUsernameResponse = {
                   ...results[0].reason.response,
                   requestDuration,
                 };
-                console.log(results[0].reason.response);
               }
 
               // if (results[1].status === "fulfilled") {
