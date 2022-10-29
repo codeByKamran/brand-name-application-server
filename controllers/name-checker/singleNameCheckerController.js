@@ -49,13 +49,27 @@ export const instagramNameChecker = async (req, res) => {
       availableContentIndicator: "Sorry, this page isn't available.",
     };
 
+    let browser = null;
+    let page = null;
+
     try {
-      const browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
         args: ["--no-sandbox"],
       });
 
-      const page = await browser.newPage();
+      page = await browser.newPage();
+    } catch (err) {
+      console.log(err.message);
+      return {
+        available: false,
+        error: true,
+        message: err.message,
+        platform: "instagram",
+        checks: 1,
+      };
+    }
 
+    try {
       await page.goto(selectors.url, {
         waitUntil: ["load", "domcontentloaded"],
       });
@@ -64,6 +78,7 @@ export const instagramNameChecker = async (req, res) => {
 
       const pageContent = await page.content();
       console.log("Step 2");
+
       if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
         // mean present in content
         console.log("Step 3");
