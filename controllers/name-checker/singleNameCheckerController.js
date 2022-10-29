@@ -29,9 +29,9 @@ export const snapchatNameChecker = async (req, res) => {
         "platform_status_update",
         formatSpecialPlatformStatus("snapchat", response.data.value)
       );
-      res.status(200).json({
-        result: formatSpecialPlatformStatus("snapchat", response.data.value),
-      });
+      res
+        .status(200)
+        .json(formatSpecialPlatformStatus("snapchat", response.data.value));
     })
     .catch((err) => {
       console.log(err);
@@ -41,7 +41,7 @@ export const snapchatNameChecker = async (req, res) => {
 
 export const instagramNameChecker = async (req, res) => {
   const { query: username } = req.params;
-  console.log("Snapchat username", username);
+  console.log("Instagram username", username);
 
   const selectors = {
     url: "https://www.instagram.com/" + username,
@@ -63,22 +63,20 @@ export const instagramNameChecker = async (req, res) => {
         // mean present in content
         return {
           availble: true,
-          error: false,
           platform: "instagram",
           checks: 1,
         };
       }
 
       return {
-        availble: false,
-        error: false,
+        available: false,
         platform: "instagram",
         checks: 1,
       };
     } catch (e) {
       console.log(e.message);
       return {
-        availble: false,
+        available: false,
         error: true,
         message: e.message,
         platform: "instagram",
