@@ -58,46 +58,49 @@ export const instagramNameChecker = async (req, res) => {
       waitUntil: ["load", "domcontentloaded"],
     });
 
+    console.log("Step 1");
+
     try {
       const pageContent = await page.content();
-      if (pageContent.indexOf(selectors.availableContentIndicator) > -1) {
+      console.log("Step 2");
+      if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
         // mean present in content
-        // return {
-        //   available: true,
-        //   platform: "instagram",
-        //   checks: 1,
-        // };
-        console.log(
-          "Index",
-          pageContent.indexOf(selectors.availableContentIndicator)
-        );
+        console.log("Step 3");
+        return {
+          available: true,
+          platform: "instagram",
+          checks: 1,
+        };
+      } else {
+        console.log("Step 4");
+        return {
+          available: false,
+          platform: "instagram",
+          checks: 1,
+        };
       }
-
-      return {
-        available: false,
-        platform: "instagram",
-        checks: 1,
-      };
-    } catch (e) {
-      console.log(e.message);
+    } catch (err) {
+      // some error occured
+      console.log(err.message);
       return {
         available: false,
         error: true,
-        message: e.message,
+        message: err.message,
         platform: "instagram",
         checks: 1,
       };
     } finally {
+      console.log("Step 5");
       await browser.close();
     }
   }
 
-  // const result = await checkAvailability(username);
-  const result = {
-    available: true,
-    platform: "instagram",
-    checks: 1,
-  };
+  const result = await checkAvailability(username);
+  // const result = {
+  //   available: true,
+  //   platform: "instagram",
+  //   checks: 1,
+  // };
 
   io.emit("platform_status_update", result);
 
