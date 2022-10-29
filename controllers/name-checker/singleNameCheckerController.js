@@ -48,19 +48,20 @@ export const instagramNameChecker = async (req, res) => {
       url: "https://www.instagram.com/" + str,
       availableContentIndicator: "Sorry, this page isn't available.",
     };
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox"],
-    });
-
-    const page = await browser.newPage();
-
-    await page.goto(selectors.url, {
-      waitUntil: ["load", "domcontentloaded"],
-    });
-
-    console.log("Step 1");
 
     try {
+      const browser = await puppeteer.launch({
+        args: ["--no-sandbox"],
+      });
+
+      const page = await browser.newPage();
+
+      await page.goto(selectors.url, {
+        waitUntil: ["load", "domcontentloaded"],
+      });
+
+      console.log("Step 1");
+
       const pageContent = await page.content();
       console.log("Step 2");
       if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
