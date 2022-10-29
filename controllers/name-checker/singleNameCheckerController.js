@@ -62,7 +62,7 @@ export const instagramNameChecker = async (req, res) => {
       if (pageContent.indexOf(selectors.availableContentIndicator) > -1) {
         // mean present in content
         return {
-          availble: true,
+          available: true,
           platform: "instagram",
           checks: 1,
         };
