@@ -45,6 +45,7 @@ export const instagramNameChecker = async (req, res) => {
 
   buid(username, "id").then(({ data }) => {
     let result = {};
+    console.log({ data });
     if (data === `Cannot read properties of undefined (reading 'split')`) {
       result = {
         available: true,
