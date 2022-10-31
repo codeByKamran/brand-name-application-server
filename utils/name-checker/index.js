@@ -180,7 +180,10 @@ export const getUsernameStatus = (platform, response) => {
 
 export const formatSpecialPlatformStatus = (platform, response) => {
   if (platform === "snapchat") {
-    if (response.status_code === "TAKEN") {
+    if (
+      response.status_code === "TAKEN" ||
+      response.status_code === "DELETED"
+    ) {
       // TAKEN
       return { available: false, checks: 1, platform: platform };
     } else if (response.status_code === "OK") {

@@ -74,21 +74,16 @@ export const instagramNameChecker = async (req, res) => {
         waitUntil: ["load", "domcontentloaded"],
       });
 
-      console.log("Step 1");
-
       const pageContent = await page.content();
-      console.log("Step 2");
 
       if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
         // mean present in content
-        console.log("Step 3");
         return {
           available: true,
           platform: "instagram",
           checks: 1,
         };
       } else {
-        console.log("Step 4");
         return {
           available: false,
           platform: "instagram",
@@ -106,7 +101,6 @@ export const instagramNameChecker = async (req, res) => {
         checks: 1,
       };
     } finally {
-      console.log("Step 5");
       await browser.close();
     }
   }
