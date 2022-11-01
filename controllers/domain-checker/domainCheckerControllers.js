@@ -23,7 +23,7 @@ export const checkDomainsController = async (req, res) => {
       },
     })
     .then((response) => {
-      console.log(response.data);
+      console.log(response.data.domains);
       if (response.data.errors && response.data.errors.length > 0) {
         // errors occured for some domains
 
@@ -32,7 +32,7 @@ export const checkDomainsController = async (req, res) => {
         // inserting extension to each result
         const result = domains.map((domain) => ({
           ...domain,
-          extension: getExtensionFromDomainName(username, domain.domain),
+          extension: domain.replace(username, ""),
         }));
 
         res.status(200).json({ domains: result });

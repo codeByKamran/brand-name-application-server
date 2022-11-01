@@ -6,6 +6,7 @@ import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
 import ProxyAgent from "proxy-agent";
 import UserAgent from "user-agents";
 import { fileURLToPath } from "url";
+import buid from "basic-instagram-user-details";
 
 export const snapchatNameChecker = async (req, res) => {
   const { query: username } = req.params;
