@@ -24,6 +24,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
+    "get-twitter-username": "^1.0.2",
     "got": "^12.5.2",
     "instagram-user": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
@@ -34,6 +35,9 @@
     "request": "^2.88.2",
     "socket.io": "^4.5.2",
     "tiktok-app-api": "^1.4.1",
+    "tiktok-scraper": "^1.4.36",
+    "tiktok-search": "^2.0.3",
+    "twitter-name": "^1.0.0",
     "user-agents": "^1.0.1180",
     "uuid": "^8.3.2"
   }

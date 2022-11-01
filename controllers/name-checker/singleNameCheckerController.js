@@ -6,7 +6,6 @@ import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
 import ProxyAgent from "proxy-agent";
 import UserAgent from "user-agents";
 import { fileURLToPath } from "url";
-import buid from "basic-instagram-user-details";
 
 export const snapchatNameChecker = async (req, res) => {
   const { query: username } = req.params;
@@ -82,7 +81,7 @@ export const tiktokNameChecker = async (req, res) => {
   let proxy = proxies[Math.floor(Math.random() * proxies.length)];
   let agent = new ProxyAgent(`socks4://` + proxy);
 
-  console.log(proxy, agent);
+  console.log(agent);
 
   res.status(200).json({
     message: "Logic Pending",
@@ -93,13 +92,51 @@ export const tiktokNameChecker = async (req, res) => {
 
 export const twitterNameChecker = async (req, res) => {
   const { query: username } = req.params;
-  console.log("Twitter username", twitterUsername);
+  console.log("Twitter username", username);
 
-  res.status(200).json({
-    message: "Logic Pending",
-    available: false,
-    username,
-  });
+  axiosDefault
+    .get("https://twitter.com/i/search/typeahead.json?q=" + username)
+    .then((response) => {
+      const users = response.data.users.map((user) => ({
+        id: user.id,
+        name: user.name,
+        screen_name: user.screen_name,
+      }));
+      let usernameCheckResult = null;
+      let count = 0;
+      users.forEach((user) => {
+        if (
+          String(user.screen_name).toLowerCase() ===
+          String(username).toLowerCase()
+        ) {
+          usernameCheckResult = {
+            matched: true,
+            perfectMatch: true,
+            count: count + 1,
+          };
+        } else if (
+          String(user.screen_name)
+            .toLowerCase()
+            .includes(String(username).toLowerCase())
+        ) {
+          usernameCheckResult = { matched: true, count: count + 1 };
+          count++;
+        }
+      });
+      let result = {};
+      console.log(usernameCheckResult);
+      if (!usernameCheckResult) {
+        result = { available: true, checks: 1, platform: "twitter" };
+      } else if (
+        usernameCheckResult?.matched ||
+        usernameCheckResult?.perfectMatch
+      ) {
+        result = { available: false, checks: 1, platform: "twitter" };
+      }
+      io.emit("platform_status_update", result);
+      res.status(200).json(result);
+    })
+    .catch((err) => console.log(err.message));
 };
 
 /*
@@ -253,6 +290,11 @@ Tiktok junk
   /*
 
   Twitter junk
+
+    // twitterName(username, function (err, isAvailable) {
+  //   console.log(isAvailable);
+  // });
+
 
 const browser = await puppeteer.launch({
     args: [
