@@ -10,6 +10,7 @@ import buid from "basic-instagram-user-details";
 
 export const snapchatNameChecker = async (req, res) => {
   const { query: username } = req.params;
+  const { origin } = req.body;
   console.log("Snapchat username", username);
 
   const xsrf_token = "JxVkpuY3VbHfOFagfT0csQ";
@@ -26,8 +27,14 @@ export const snapchatNameChecker = async (req, res) => {
     .post(url, {}, { headers: headers })
     .then((response) => {
       io.emit(
-        "platform_status_update",
-        formatSpecialPlatformStatus("snapchat", response.data.value)
+        origin === "NAME_GENERATOR_POPUP"
+          ? "name_generator_platform_status_update"
+          : "platform_status_update",
+        {
+          ...formatSpecialPlatformStatus("snapchat", response.data.value),
+          username,
+          origin,
+        }
       );
       res
         .status(200)
@@ -41,6 +48,7 @@ export const snapchatNameChecker = async (req, res) => {
 
 export const instagramNameChecker = async (req, res) => {
   const { query: username } = req.params;
+  const { origin } = req.body;
   console.log("Instagram username", username);
 
   buid(username, "id").then(({ data }) => {
@@ -60,7 +68,12 @@ export const instagramNameChecker = async (req, res) => {
       };
     }
 
-    io.emit("platform_status_update", result);
+    io.emit(
+      origin === "NAME_GENERATOR_POPUP"
+        ? "name_generator_platform_status_update"
+        : "platform_status_update",
+      { ...result, username, origin }
+    );
     res.status(200).json(result);
   });
 };
@@ -84,6 +97,18 @@ export const tiktokNameChecker = async (req, res) => {
 
   console.log(agent);
 
+  io.emit(
+    origin === "NAME_GENERATOR_POPUP"
+      ? "name_generator_platform_status_update"
+      : "platform_status_update",
+    {
+      message: "Logic Pending",
+      available: false,
+      username,
+      origin,
+    }
+  );
+
   res.status(200).json({
     message: "Logic Pending",
     available: false,
@@ -93,6 +118,7 @@ export const tiktokNameChecker = async (req, res) => {
 
 export const twitterNameChecker = async (req, res) => {
   const { query: username } = req.params;
+  const { origin } = req.body;
   console.log("Twitter username", username);
 
   axiosDefault
@@ -125,7 +151,7 @@ export const twitterNameChecker = async (req, res) => {
         }
       });
       let result = {};
-      console.log(usernameCheckResult);
+      console.log({ usernameCheckResult });
       if (!usernameCheckResult) {
         result = { available: true, checks: 1, platform: "twitter" };
       } else if (
@@ -134,7 +160,12 @@ export const twitterNameChecker = async (req, res) => {
       ) {
         result = { available: false, checks: 1, platform: "twitter" };
       }
-      io.emit("platform_status_update", result);
+      io.emit(
+        origin === "NAME_GENERATOR_POPUP"
+          ? "name_generator_platform_status_update"
+          : "platform_status_update",
+        { ...result, username, origin }
+      );
       res.status(200).json(result);
     })
     .catch((err) => console.log(err.message));
@@ -212,7 +243,9 @@ async function checkAvailability(str) {
     checks: 1,
   };
 
-  io.emit("platform_status_update", result);
+  io.emit(origin === "NAME_GENERATOR_POPUP"
+                  ? "name_generator_platform_status_update"
+                  : "platform_status_update", result);
 
   res.status(200).json(result);
 */

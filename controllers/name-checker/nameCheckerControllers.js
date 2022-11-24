@@ -33,25 +33,25 @@ export const checkNamesController = async (req, res) => {
 
       if (platform.platformCode === "instagram") {
         // special case 1 - Instagram
-        axiosDefault
-          .post(platform.redirect + username)
-          .then((res) => {
-            if (res.status === 200) {
-              // success
-              console.log(res.data);
-            }
-          })
-          .catch((err) => console.log(err.message));
+        // axiosDefault
+        //   .post(platform.redirect + username)
+        //   .then((res) => {
+        //     if (res.status === 200) {
+        //       // success
+        //       console.log(res.data);
+        //     }
+        //   })
+        //   .catch((err) => console.log(err.message));
       } else if (platform.platformCode === "snapchat") {
-        axiosDefault
-          .post(platform.redirect + username)
-          .then((res) => {
-            if (res.status === 200) {
-              // success
-              console.log(res.data);
-            }
-          })
-          .catch((err) => console.log(err.message));
+        // axiosDefault
+        //   .post(platform.redirect + username)
+        //   .then((res) => {
+        //     if (res.status === 200) {
+        //       // success
+        //       console.log(res.data);
+        //     }
+        //   })
+        //   .catch((err) => console.log(err.message));
         // special case 2 - Snapchat
       } else if (platform.platformCode === "tiktok") {
         // special case 2 - Snapchat
