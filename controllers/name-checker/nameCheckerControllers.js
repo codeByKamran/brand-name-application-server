@@ -12,10 +12,9 @@ import {
 
 export const checkNamesController = async (req, res) => {
   const { query: username } = req.params;
-  const { platforms: platformsToSearch, domains } = req.body;
+  const { platforms: platformsToSearch, origin } = req.body;
   console.log("Username to check", username);
   console.log("Platforms to check", platformsToSearch);
-  console.log("Domains to check", domains);
 
   // filter platforms to search
   const filteredPlatformsToSearch = req.body.all
@@ -158,7 +157,7 @@ export const checkNamesController = async (req, res) => {
               console.log(platform.platform + " Query", {
                 ...formatResponse(queryUsernameResponse),
                 url: platformProfileURL,
-                data: null,
+                // data: null,
               });
               // console.log(platform.platform + " Claimed", {
               //   ...formatResponse(claimedUsernameResponse),
@@ -171,20 +170,27 @@ export const checkNamesController = async (req, res) => {
               //   data: null,
               // });
 
-              console.log(
-                platform.platform + " Result",
-                getUsernameStatus(
+              console.log(platform.platform + " Result", {
+                ...getUsernameStatus(
                   platform,
                   formatResponse(queryUsernameResponse)
-                )
-              );
+                ),
+                username,
+                origin,
+              });
 
               io.emit(
-                "platform_status_update",
-                getUsernameStatus(
-                  platform,
-                  formatResponse(queryUsernameResponse)
-                )
+                origin === "NAME_GENERATOR_POPUP"
+                  ? "name_generator_platform_status_update"
+                  : "platform_status_update",
+                {
+                  ...getUsernameStatus(
+                    platform,
+                    formatResponse(queryUsernameResponse)
+                  ),
+                  username,
+                  origin,
+                }
               );
             })
             .catch((err) => {
@@ -194,8 +200,14 @@ export const checkNamesController = async (req, res) => {
           // Invalid username for this platform
           console.log(`Invalid Username for ${platform.platform}`);
           io.emit(
-            "platform_status_update",
-            getUsernameStatus(platform, { invalid: true })
+            origin === "NAME_GENERATOR_POPUP"
+              ? "name_generator_platform_status_update"
+              : "platform_status_update",
+            {
+              ...getUsernameStatus(platform, { invalid: true }),
+              username,
+              origin,
+            }
           );
         }
       }
