@@ -20,6 +20,7 @@ import { socketIOOptions } from "./config/socket.js";
 import nameCheckRouter from "./routes/v1/name-checker/check.js";
 import domainCheckRouter from "./routes/v1/domain-checker/check.js";
 import singleNameCheckRouter from "./routes/v1/name-checker/single/check.js";
+import spellCheckRouter from "./routes/v1/spell-checker/check.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,6 +61,7 @@ app.use("/api/v1/", rootRouter);
 app.use("/api/v1/name-checker/", nameCheckRouter);
 app.use("/api/v1/name-checker/single", singleNameCheckRouter);
 app.use("/api/v1/domain-checker/", domainCheckRouter);
+app.use("/api/v1/spell-checker/", spellCheckRouter);
 
 // Listening to Database
 mongoose.connection.once("open", () => {

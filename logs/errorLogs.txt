@@ -46,3 +46,4 @@
     |     property 'parser' -> object with constructor 'HTTPParser'
     --- property 'socket' closes the circle
 20221024	16:43:40	ea085d4a-eacc-4179-9e16-89c9d8399041	ReferenceError: username is not defined
+20221210	15:47:54	8837bfe0-a6f8-4fc9-85b0-5ca0e3e9782e	SyntaxError: Unexpected string in JSON at position 25

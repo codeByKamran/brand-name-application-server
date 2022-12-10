@@ -33,12 +33,15 @@
     "proxy-agent": "^5.0.0",
     "puppeteer": "^19.2.0",
     "request": "^2.88.2",
+    "simple-spellchecker": "^1.0.2",
     "socket.io": "^4.5.2",
+    "spelling-corrector": "^3.0.0",
     "tiktok-app-api": "^1.4.1",
     "tiktok-scraper": "^1.4.36",
     "tiktok-search": "^2.0.3",
     "twitter-name": "^1.0.0",
     "user-agents": "^1.0.1180",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "wordsworth": "^0.1.0"
   }
 }
