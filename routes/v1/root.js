@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { axiosDefault } from "../../axios/index.js";
 import { logsClearController } from "../../controllers/name-checker/logsClearControllers.js";
 const rootRouter = express.Router();
 
@@ -9,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 rootRouter.route("/initiate").get((req, res) => {
-      res.status(202).json({message: 'Server Awake and Connected'});
+  res.status(202).json({ message: "Server Awake and Connected" });
 });
 
 rootRouter.route("/requestsLogs").get((req, res) => {
