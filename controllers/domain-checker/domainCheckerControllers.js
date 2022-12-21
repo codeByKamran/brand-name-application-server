@@ -75,14 +75,7 @@ export const filterByDomainAvailabilityController = async (req, res) => {
 
     for (let i = 0; i < chunkedDomains.length; i++) {
       let resultTemp = response[i].value.data;
-      let resultFinal = [];
-      if (resultTemp?.errors && resultTemp?.errors.length > 0) {
-        // error for some domains
-        resultFinal = resultTemp?.domains; // [...resultTemp.errors, ...resultTemp?.domains];
-      } else {
-        resultFinal = resultTemp?.domains;
-      }
-      completeData = completeData.concat(resultFinal);
+      completeData = completeData.concat(resultTemp?.domains);
     }
 
     let finalResult = [];
@@ -91,18 +84,24 @@ export const filterByDomainAvailabilityController = async (req, res) => {
         String(domain).includes(name)
       );
 
-      let nameNameResult = {};
+      let nameResult = { availableDomains: [], takenDomains: [] };
 
       wordDomains.forEach((nameDomain) => {
-        nameNameResult = {
-          ...nameNameResult,
+        nameResult = {
+          ...nameResult,
           name,
           show: nameDomain.available ? true : false,
           result: wordDomains,
+          availableDomains: nameDomain.available
+            ? nameResult.availableDomains.concat([nameDomain.domain])
+            : nameResult.availableDomains,
+          takenDomains: !nameDomain.available
+            ? nameResult.takenDomains.concat([nameDomain.domain])
+            : nameResult.takenDomains,
         };
       });
 
-      finalResult = finalResult.concat([nameNameResult]);
+      finalResult = finalResult.concat([nameResult]);
     });
     res.status(200).json(finalResult);
   } catch (err) {
