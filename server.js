@@ -1,9 +1,9 @@
 import express from "express";
+// import mongoose from "mongoose";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -29,16 +29,17 @@ const app = express();
 const httpServer = createServer(app);
 export const io = new Server(httpServer, socketIOOptions);
 
-io.on("connection", (socket) => {
-  console.log(`Client with ID of ${socket.id} connected!`);
-  socket.emit("connection_event", { message: "Socket Connection Established" });
-  socket.on("disconnect", () => {
-    console.log("User Disconnected");
-  });
-});
+// Socket connection
+// io.on("connection", (socket) => {
+//   console.log(`Client with ID of ${socket.id} connected!`);
+//   socket.emit("connection_event", { message: "Socket Connection Established" });
+//   socket.on("disconnect", () => {
+//     console.log("User Disconnected");
+//   });
+// });
 
 // connecting to mongo
-connectMongo();
+// connectMongo();
 
 // middlewares
 app.use(credentials);
@@ -64,9 +65,9 @@ app.use("/api/v1/domain-checker/", domainCheckRouter);
 app.use("/api/v1/spell-checker/", spellCheckRouter);
 
 // Listening to Database
-mongoose.connection.once("open", () => {
-  console.log("Connected to MongoDB.");
-});
+// mongoose.connection.once("open", () => {
+//   console.log("Connected to MongoDB.");
+// });
 
 const PORT = process.env.PORT || 3500;
 

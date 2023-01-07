@@ -1,12 +1,13 @@
 import fs from "fs";
+import puppeteer from "puppeteer";
+import UserAgent from "user-agents";
+import { fileURLToPath } from "url";
 import path from "path";
+import ProxyAgent from "proxy-agent";
+import buid from "basic-instagram-user-details";
 import { axiosDefault } from "../../axios/index.js";
 import { io } from "../../server.js";
 import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
-import ProxyAgent from "proxy-agent";
-import UserAgent from "user-agents";
-import { fileURLToPath } from "url";
-import buid from "basic-instagram-user-details";
 
 export const snapchatNameChecker = async (req, res) => {
   const { query: username } = req.params;
@@ -50,6 +51,45 @@ export const instagramNameChecker = async (req, res) => {
   const { query: username } = req.params;
   const { origin } = req.body;
   console.log("Instagram username", username);
+
+  const selectors = {
+    url: "https://www.instagram.com/" + username,
+    availableContentIndicator: "Sorry, this page isn't available.",
+  };
+
+  let browser = null;
+  let page = null;
+
+  try {
+    browser = await puppeteer.launch({
+      args: ["--no-sandbox"],
+    });
+
+    page = await browser.newPage();
+  } catch (err) {
+    console.log(err.message);
+  }
+
+  try {
+    await page.goto(selectors.url, {
+      waitUntil: ["load", "domcontentloaded"],
+    });
+
+    const pageContent = await page.content();
+    console.log(pageContent);
+
+    if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
+      // mean present in content
+      console.log("Available");
+    } else {
+      console.log("Not Available");
+    }
+  } catch (err) {
+    // some error occured
+    console.log(err.message);
+  } finally {
+    await browser.close();
+  }
 
   buid(username, "id").then(({ data }) => {
     let result = {};

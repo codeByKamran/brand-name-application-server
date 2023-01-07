@@ -1,4 +1,3 @@
-import axios from "axios";
 import { performance } from "perf_hooks";
 import { axiosDefault, headers } from "../../axios/index.js";
 import { platforms as platformsAll } from "../../lib/static/platforms.js";
@@ -157,7 +156,7 @@ export const checkNamesController = async (req, res) => {
               console.log(platform.platform + " Query", {
                 ...formatResponse(queryUsernameResponse),
                 url: platformProfileURL,
-                // data: null,
+                data: null,
               });
               // console.log(platform.platform + " Claimed", {
               //   ...formatResponse(claimedUsernameResponse),

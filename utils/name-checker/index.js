@@ -181,15 +181,15 @@ export const getUsernameStatus = (platform, response) => {
 export const formatSpecialPlatformStatus = (platform, response) => {
   if (platform === "snapchat") {
     if (
-      response.status_code === "TAKEN" ||
-      response.status_code === "DELETED"
+      response?.status_code === "TAKEN" ||
+      response?.status_code === "DELETED"
     ) {
       // TAKEN
       return { available: false, checks: 1, platform: platform };
-    } else if (response.status_code === "OK") {
+    } else if (response?.status_code === "OK") {
       // AVAILABLE
       return { available: true, checks: 1, platform: platform };
-    } else if (response.status_code === "TOO_LONG") {
+    } else if (response?.status_code === "TOO_LONG") {
       return {
         available: false,
         failed: true,
@@ -198,7 +198,7 @@ export const formatSpecialPlatformStatus = (platform, response) => {
         statusCode: "TOO_LONG",
         platform: platform,
       };
-    } else if (response.status_code === "TOO_SHORT") {
+    } else if (response?.status_code === "TOO_SHORT") {
       return {
         available: false,
         failed: true,
@@ -211,8 +211,8 @@ export const formatSpecialPlatformStatus = (platform, response) => {
       return {
         available: false,
         failed: true,
-        reason: response.error_message,
-        statusCode: response.status_code,
+        reason: response?.error_message,
+        statusCode: response?.status_code,
         platform: platform,
       };
     }
