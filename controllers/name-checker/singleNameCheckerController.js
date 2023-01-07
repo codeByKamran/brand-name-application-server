@@ -52,48 +52,8 @@ export const instagramNameChecker = async (req, res) => {
   const { origin } = req.body;
   console.log("Instagram username", username);
 
-  const selectors = {
-    url: "https://www.instagram.com/" + username,
-    availableContentIndicator: "Sorry, this page isn't available.",
-  };
-
-  let browser = null;
-  let page = null;
-
-  try {
-    browser = await puppeteer.launch({
-      args: ["--no-sandbox"],
-    });
-
-    page = await browser.newPage();
-  } catch (err) {
-    console.log(err.message);
-  }
-
-  try {
-    await page.goto(selectors.url, {
-      waitUntil: ["load", "domcontentloaded"],
-    });
-
-    const pageContent = await page.content();
-    console.log(pageContent);
-
-    if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
-      // mean present in content
-      console.log("Available");
-    } else {
-      console.log("Not Available");
-    }
-  } catch (err) {
-    // some error occured
-    console.log(err.message);
-  } finally {
-    await browser.close();
-  }
-
   buid(username, "id").then(({ data }) => {
     let result = {};
-    console.log({ data });
     if (data === `Cannot read properties of undefined (reading 'split')`) {
       result = {
         available: true,
@@ -117,6 +77,45 @@ export const instagramNameChecker = async (req, res) => {
     res.status(200).json(result);
   });
 };
+
+// const selectors = {
+//   url: "https://www.instagram.com/" + username,
+//   availableContentIndicator: "Sorry, this page isn't available.",
+// };
+
+// let browser = null;
+// let page = null;
+
+// try {
+//   browser = await puppeteer.launch({
+//     args: ["--no-sandbox"],
+//   });
+
+//   page = await browser.newPage();
+// } catch (err) {
+//   console.log(err.message);
+// }
+
+// try {
+//   await page.goto(selectors.url, {
+//     waitUntil: ["load", "domcontentloaded"],
+//   });
+
+//   const pageContent = await page.content();
+//   console.log(pageContent);
+
+//   if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
+//     // mean present in content
+//     console.log("Available");
+//   } else {
+//     console.log("Not Available");
+//   }
+// } catch (err) {
+//   // some error occured
+//   console.log(err.message);
+// } finally {
+//   await browser.close();
+// }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
