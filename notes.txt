@@ -1,0 +1,16 @@
+Show Available
+Etsy
+Wix
+Meetup
+
+Show Taken
+Foursquare
+Facebook
+Ebay
+Vimeo
+
+Unimplemented
+Instagram
+Twitter
+Tiktok
+Snapchat
