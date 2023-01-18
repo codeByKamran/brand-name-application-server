@@ -14,37 +14,57 @@ export const snapchatNameChecker = async (req, res) => {
   const { origin } = req.body;
   console.log("Snapchat username", username);
 
-  const xsrf_token = "JxVkpuY3VbHfOFagfT0csQ";
+  // const xsrf_token = "JxVkpuY3VbHfOFagfT0csQ";
 
-  const headers = {
-    "User-Agent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:66.0) Gecko/20100101 Firefox/66.0",
-    Cookie: `xsrf_token=${xsrf_token}`,
-  };
+  // const headers = {
+  //   "User-Agent":
+  //     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:66.0) Gecko/20100101 Firefox/66.0",
+  //   Cookie: `xsrf_token=${xsrf_token}`,
+  // };
 
-  const url = `https://accounts.snapchat.com/accounts/get_username_suggestions?requested_username=${username}&xsrf_token=${xsrf_token}`;
+  // const url = `https://accounts.snapchat.com/accounts/get_username_suggestions?requested_username=${username}&xsrf_token=${xsrf_token}`;
 
-  axiosDefault
-    .post(url, {}, { headers: headers })
-    .then((response) => {
-      io.emit(
-        origin === "NAME_GENERATOR_POPUP"
-          ? "name_generator_platform_status_update"
-          : "platform_status_update",
-        {
-          ...formatSpecialPlatformStatus("snapchat", response.data.value),
-          username,
-          origin,
-        }
-      );
-      res
-        .status(200)
-        .json(formatSpecialPlatformStatus("snapchat", response.data.value));
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err.message });
-    });
+  // axiosDefault
+  //   .post(url, {}, { headers: headers })
+  //   .then((response) => {
+  //     io.emit(
+  //       origin === "NAME_GENERATOR_POPUP"
+  //         ? "name_generator_platform_status_update"
+  //         : "platform_status_update",
+  //       {
+  //         ...formatSpecialPlatformStatus("snapchat", response.data.value),
+  //         username,
+  //         origin,
+  //       }
+  //     );
+  //     res
+  //       .status(200)
+  //       .json(formatSpecialPlatformStatus("snapchat", response.data.value));
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     res.status(500).json({ message: err.message });
+  //   });
+
+  io.emit(
+    origin === "NAME_GENERATOR_POPUP"
+      ? "name_generator_platform_status_update"
+      : "platform_status_update",
+    {
+      message: "Logic Pending",
+      available: false,
+      username: username,
+      origin,
+      platform: "snapchat",
+    }
+  );
+
+  res.status(200).json({
+    message: "Logic Pending",
+    available: false,
+    username: username,
+    platform: "snapchat",
+  });
 };
 
 export const instagramNameChecker = async (req, res) => {
@@ -52,29 +72,49 @@ export const instagramNameChecker = async (req, res) => {
   const { origin } = req.body;
   console.log("Instagram username", username);
 
-  buid(username, "id").then(({ data }) => {
-    let result = {};
-    if (data === `Cannot read properties of undefined (reading 'split')`) {
-      result = {
-        available: true,
-        platform: "instagram",
-        checks: 1,
-      };
-    } else {
-      result = {
-        available: false,
-        platform: "instagram",
-        checks: 1,
-      };
-    }
+  // buid(username, "id").then(({ data }) => {
+  //   let result = {};
+  //   if (data === `Cannot read properties of undefined (reading 'split')`) {
+  //     result = {
+  //       available: true,
+  //       platform: "instagram",
+  //       checks: 1,
+  //     };
+  //   } else {
+  //     result = {
+  //       available: false,
+  //       platform: "instagram",
+  //       checks: 1,
+  //     };
+  //   }
 
-    io.emit(
-      origin === "NAME_GENERATOR_POPUP"
-        ? "name_generator_platform_status_update"
-        : "platform_status_update",
-      { ...result, username, origin }
-    );
-    res.status(200).json(result);
+  //   io.emit(
+  //     origin === "NAME_GENERATOR_POPUP"
+  //       ? "name_generator_platform_status_update"
+  //       : "platform_status_update",
+  //     { ...result, username, origin }
+  //   );
+  //   res.status(200).json(result);
+  // });
+
+  io.emit(
+    origin === "NAME_GENERATOR_POPUP"
+      ? "name_generator_platform_status_update"
+      : "platform_status_update",
+    {
+      message: "Logic Pending",
+      available: false,
+      username: username,
+      origin,
+      platform: "instagram",
+    }
+  );
+
+  res.status(200).json({
+    message: "Logic Pending",
+    available: false,
+    username: username,
+    platform: "instagram",
   });
 };
 
@@ -117,24 +157,37 @@ export const instagramNameChecker = async (req, res) => {
 //   await browser.close();
 // }
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-const proxies = fs
-  .readFileSync(path.join(__dirname, ".", "extra", "proxies.txt"), "utf-8")
-  .replace(/\r/gi, "")
-  .split("\n");
+// const proxies = fs
+//   .readFileSync(path.join(__dirname, ".", "extra", "proxies.txt"), "utf-8")
+//   .replace(/\r/gi, "")
+//   .split("\n");
 
-var userAgent = new UserAgent();
+// var userAgent = new UserAgent();
 
 export const tiktokNameChecker = async (req, res) => {
   const { query: username } = req.params;
+  const { origin } = req.body;
   console.log("Tiktok username", username);
 
-  let proxy = proxies[Math.floor(Math.random() * proxies.length)];
-  let agent = new ProxyAgent(`socks4://` + proxy);
+  // let proxy = proxies[Math.floor(Math.random() * proxies.length)];
+  // let agent = new ProxyAgent(`socks4://` + proxy);
 
-  console.log(agent);
+  // console.log(agent);
+
+  // io.emit(
+  //   origin === "NAME_GENERATOR_POPUP"
+  //     ? "name_generator_platform_status_update"
+  //     : "platform_status_update",
+  //   {
+  //     message: "Logic Pending",
+  //     available: false,
+  //     username,
+  //     origin,
+  //   }
+  // );
 
   io.emit(
     origin === "NAME_GENERATOR_POPUP"
@@ -143,8 +196,9 @@ export const tiktokNameChecker = async (req, res) => {
     {
       message: "Logic Pending",
       available: false,
-      username,
+      username: username,
       origin,
+      platform: "tiktok",
     }
   );
 
@@ -152,6 +206,7 @@ export const tiktokNameChecker = async (req, res) => {
     message: "Logic Pending",
     available: false,
     username: username,
+    platform: "tiktok",
   });
 };
 
@@ -160,54 +215,74 @@ export const twitterNameChecker = async (req, res) => {
   const { origin } = req.body;
   console.log("Twitter username", username);
 
-  axiosDefault
-    .get("https://twitter.com/i/search/typeahead.json?q=" + username)
-    .then((response) => {
-      const users = response.data.users.map((user) => ({
-        id: user.id,
-        name: user.name,
-        screen_name: user.screen_name,
-      }));
-      let usernameCheckResult = null;
-      let count = 0;
-      users.forEach((user) => {
-        if (
-          String(user.screen_name).toLowerCase() ===
-          String(username).toLowerCase()
-        ) {
-          usernameCheckResult = {
-            matched: true,
-            perfectMatch: true,
-            count: count + 1,
-          };
-        } else if (
-          String(user.screen_name)
-            .toLowerCase()
-            .includes(String(username).toLowerCase())
-        ) {
-          usernameCheckResult = { matched: true, count: count + 1 };
-          count++;
-        }
-      });
-      let result = {};
-      console.log({ usernameCheckResult });
-      if (!usernameCheckResult) {
-        result = { available: true, checks: 1, platform: "twitter" };
-      } else if (
-        usernameCheckResult?.matched ||
-        usernameCheckResult?.perfectMatch
-      ) {
-        result = { available: false, checks: 1, platform: "twitter" };
-      }
-      io.emit(
-        origin === "NAME_GENERATOR_POPUP"
-          ? "name_generator_platform_status_update"
-          : "platform_status_update",
-        { ...result, username, origin }
-      );
-      res.status(200).json(result);
-    })
-    .catch((err) => console.log(err.message));
+  // axiosDefault
+  //   .get("https://twitter.com/i/search/typeahead.json?q=" + username)
+  //   .then((response) => {
+  //     const users = response.data.users.map((user) => ({
+  //       id: user.id,
+  //       name: user.name,
+  //       screen_name: user.screen_name,
+  //     }));
+  //     let usernameCheckResult = null;
+  //     let count = 0;
+  //     users.forEach((user) => {
+  //       if (
+  //         String(user.screen_name).toLowerCase() ===
+  //         String(username).toLowerCase()
+  //       ) {
+  //         usernameCheckResult = {
+  //           matched: true,
+  //           perfectMatch: true,
+  //           count: count + 1,
+  //         };
+  //       } else if (
+  //         String(user.screen_name)
+  //           .toLowerCase()
+  //           .includes(String(username).toLowerCase())
+  //       ) {
+  //         usernameCheckResult = { matched: true, count: count + 1 };
+  //         count++;
+  //       }
+  //     });
+  //     let result = {};
+  //     console.log({ usernameCheckResult });
+  //     if (!usernameCheckResult) {
+  //       result = { available: true, checks: 1, platform: "twitter" };
+  //     } else if (
+  //       usernameCheckResult?.matched ||
+  //       usernameCheckResult?.perfectMatch
+  //     ) {
+  //       result = { available: false, checks: 1, platform: "twitter" };
+  //     }
+  //     io.emit(
+  //       origin === "NAME_GENERATOR_POPUP"
+  //         ? "name_generator_platform_status_update"
+  //         : "platform_status_update",
+  //       { ...result, username, origin }
+  //     );
+  //     res.status(200).json(result);
+  //   })
+  //   .catch((err) => console.log(err.message));
+
+  io.emit(
+    origin === "NAME_GENERATOR_POPUP"
+      ? "name_generator_platform_status_update"
+      : "platform_status_update",
+    {
+      message: "Logic Pending",
+      available: false,
+      username: username,
+      origin,
+      platform: "twitter",
+    }
+  );
+
+  res.status(200).json({
+    message: "Logic Pending",
+    available: false,
+    username: username,
+    platform: "twitter",
+  });
 };
 
 /*

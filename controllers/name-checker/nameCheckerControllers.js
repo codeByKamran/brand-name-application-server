@@ -27,40 +27,63 @@ export const checkNamesController = async (req, res) => {
     res.status(400).json({ message: "No Target Platforms" });
   } else {
     // platforms to search specified - starting search
+
     for (const platform of filteredPlatformsToSearch) {
       // iterating through list of platforms
-
-      if (platform.platformCode === "instagram") {
-        // special case 1 - Instagram
-        // axiosDefault
-        //   .post(platform.redirect + username)
-        //   .then((res) => {
-        //     if (res.status === 200) {
-        //       // success
-        //       console.log(res.data);
-        //     }
-        //   })
-        //   .catch((err) => console.log(err.message));
-      } else if (platform.platformCode === "snapchat") {
-        // axiosDefault
-        //   .post(platform.redirect + username)
-        //   .then((res) => {
-        //     if (res.status === 200) {
-        //       // success
-        //       console.log(res.data);
-        //     }
-        //   })
-        //   .catch((err) => console.log(err.message));
-        // special case 2 - Snapchat
-      } else if (platform.platformCode === "tiktok") {
-        // special case 2 - Snapchat
-      } else if (platform.platformCode === "twitter") {
-        // special case 2 - Snapchat
-      } else {
-        // remaining platforms
-        if (isValidUsername(username, platform.regexCheck)) {
-          // check for validatity of username for platform
-          // no need for further checks
+      // check for validatity of username for platform
+      if (isValidUsername(username, platform.regexCheck)) {
+        // username check passed - proceed further with availability check
+        // handling special platforms
+        if (platform.platformCode === "instagram") {
+          // special case 1 - Instagram
+          axiosDefault
+            .post(platform.redirect + username, { origin })
+            .then((res) => {
+              if (res.status === 200) {
+                console.log(res.data);
+              }
+            })
+            .catch((err) =>
+              console.log("Instagram name check error: ", err.message)
+            );
+        } else if (platform.platformCode === "snapchat") {
+          // special case 2 - Snapchat
+          axiosDefault
+            .post(platform.redirect + username, { origin })
+            .then((res) => {
+              if (res.status === 200) {
+                console.log(res.data);
+              }
+            })
+            .catch((err) =>
+              console.log("Snapchat name check error: ", err.message)
+            );
+        } else if (platform.platformCode === "tiktok") {
+          // special case 2 - Tiktok
+          axiosDefault
+            .post(platform.redirect + username, { origin })
+            .then((res) => {
+              if (res.status === 200) {
+                console.log(res.data);
+              }
+            })
+            .catch((err) =>
+              console.log("Tiktok name check error: ", err.message)
+            );
+        } else if (platform.platformCode === "twitter") {
+          // special case 2 - Twitter
+          axiosDefault
+            .post(platform.redirect + username, { origin })
+            .then((res) => {
+              if (res.status === 200) {
+                console.log(res.data);
+              }
+            })
+            .catch((err) =>
+              console.log("Tiktok name check error: ", err.message)
+            );
+        } else {
+          // handling remaining platforms
 
           // query profile url
           const platformProfileURL = getProfileURL(
@@ -158,6 +181,7 @@ export const checkNamesController = async (req, res) => {
                 url: platformProfileURL,
                 data: null,
               });
+
               // console.log(platform.platform + " Claimed", {
               //   ...formatResponse(claimedUsernameResponse),
               //   url: platformPorfileURLClaimed,
@@ -195,26 +219,22 @@ export const checkNamesController = async (req, res) => {
             .catch((err) => {
               console.log(err);
             });
-        } else {
-          // Invalid username for this platform
-          console.log(`Invalid Username for ${platform.platform}`);
-          io.emit(
-            origin === "NAME_GENERATOR_POPUP"
-              ? "name_generator_platform_status_update"
-              : "platform_status_update",
-            {
-              ...getUsernameStatus(platform, { invalid: true }),
-              username,
-              origin,
-            }
-          );
         }
+      } else {
+        // Invalid username for this platform
+        console.log(`Invalid Username for ${platform.platform}`);
+        io.emit(
+          origin === "NAME_GENERATOR_POPUP"
+            ? "name_generator_platform_status_update"
+            : "platform_status_update",
+          {
+            ...getUsernameStatus(platform, { invalid: true }),
+            username,
+            origin,
+          }
+        );
       }
     }
-    res.sendStatus(200);
   }
+  res.sendStatus(200);
 };
-
-/*
-
-*/
