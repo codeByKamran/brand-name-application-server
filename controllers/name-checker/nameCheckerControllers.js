@@ -34,8 +34,8 @@ export const checkNamesController = async (req, res) => {
       if (isValidUsername(username, platform.regexCheck)) {
         // username check passed - proceed further with availability check
         // handling special platforms
-        if (platform.platformCode === "instagram") {
-          // special case 1 - Instagram
+
+        if (platform?.special) {
           axiosDefault
             .post(platform.redirect + username, { origin })
             .then((res) => {
@@ -44,47 +44,13 @@ export const checkNamesController = async (req, res) => {
               }
             })
             .catch((err) =>
-              console.log("Instagram name check error: ", err.message)
-            );
-        } else if (platform.platformCode === "snapchat") {
-          // special case 2 - Snapchat
-          axiosDefault
-            .post(platform.redirect + username, { origin })
-            .then((res) => {
-              if (res.status === 200) {
-                console.log(res.data);
-              }
-            })
-            .catch((err) =>
-              console.log("Snapchat name check error: ", err.message)
-            );
-        } else if (platform.platformCode === "tiktok") {
-          // special case 2 - Tiktok
-          axiosDefault
-            .post(platform.redirect + username, { origin })
-            .then((res) => {
-              if (res.status === 200) {
-                console.log(res.data);
-              }
-            })
-            .catch((err) =>
-              console.log("Tiktok name check error: ", err.message)
-            );
-        } else if (platform.platformCode === "twitter") {
-          // special case 2 - Twitter
-          axiosDefault
-            .post(platform.redirect + username, { origin })
-            .then((res) => {
-              if (res.status === 200) {
-                console.log(res.data);
-              }
-            })
-            .catch((err) =>
-              console.log("Tiktok name check error: ", err.message)
+              console.log(
+                platform.platform + " name check error: ",
+                err.message
+              )
             );
         } else {
           // handling remaining platforms
-
           // query profile url
           const platformProfileURL = getProfileURL(
             username,
@@ -93,18 +59,18 @@ export const checkNamesController = async (req, res) => {
           );
 
           // query profile url
-          // const platformPorfileURLClaimed = getProfileURL(
-          //   platform.username_claimed,
-          //   platform.url,
-          //   platform.urlProbe
-          // );
+          const platformPorfileURLClaimed = getProfileURL(
+            platform.username_claimed,
+            platform.url,
+            platform.urlProbe
+          );
 
           // query profile url
-          // const platformPorfileURLUnclaimed = getProfileURL(
-          //   platform.username_unclaimed,
-          //   platform.url,
-          //   platform.urlProbe
-          // );
+          const platformPorfileURLUnclaimed = getProfileURL(
+            platform.username_unclaimed,
+            platform.url,
+            platform.urlProbe
+          );
 
           // saving current time to calculate request time (aka... response time - latency)
           let currentTime = performance.now();
@@ -121,25 +87,25 @@ export const checkNamesController = async (req, res) => {
           }
 
           // claimed username request
-          // function checkClaimedUsername() {
-          //   return axiosDefault.get(platformPorfileURLClaimed, {
-          //     headers: requestHeaders,
-          //     maxRedirects: platform.errorType === "response_url" && 0,
-          //   });
-          // }
+          function checkClaimedUsername() {
+            return axiosDefault.get(platformPorfileURLClaimed, {
+              headers: requestHeaders,
+              maxRedirects: platform.errorType === "response_url" && 0,
+            });
+          }
 
           // unclaimed username request
-          // function checkUnclaimedUsername() {
-          //   return axiosDefault.get(platformPorfileURLUnclaimed, {
-          //     headers: requestHeaders,
-          //     maxRedirects: platform.errorType === "response_url" && 0,
-          //   });
-          // }
+          function checkUnclaimedUsername() {
+            return axiosDefault.get(platformPorfileURLUnclaimed, {
+              headers: requestHeaders,
+              maxRedirects: platform.errorType === "response_url" && 0,
+            });
+          }
 
           Promise.allSettled([
             checkQueryUsername(),
-            // checkClaimedUsername(),
-            // checkUnclaimedUsername(),
+            checkClaimedUsername(),
+            checkUnclaimedUsername(),
           ])
             .then((results) => {
               const requestDuration = +(
@@ -158,23 +124,23 @@ export const checkNamesController = async (req, res) => {
                 };
               }
 
-              // if (results[1].status === "fulfilled") {
-              //   claimedUsernameResponse = results[1].value;
-              // } else {
-              //   claimedUsernameResponse = {
-              //     ...results[1].reason.response,
-              //     requestDuration,
-              //   };
-              // }
+              if (results[1].status === "fulfilled") {
+                claimedUsernameResponse = results[1].value;
+              } else {
+                claimedUsernameResponse = {
+                  ...results[1].reason.response,
+                  requestDuration,
+                };
+              }
 
-              // if (results[2].status === "fulfilled") {
-              //   unclaimedUsernameResponse = results[2].value;
-              // } else {
-              //   unclaimedUsernameResponse = {
-              //     ...results[2].reason.response,
-              //     requestDuration,
-              //   };
-              // }
+              if (results[2].status === "fulfilled") {
+                unclaimedUsernameResponse = results[2].value;
+              } else {
+                unclaimedUsernameResponse = {
+                  ...results[2].reason.response,
+                  requestDuration,
+                };
+              }
 
               console.log(platform.platform + " Query", {
                 ...formatResponse(queryUsernameResponse),
@@ -187,6 +153,7 @@ export const checkNamesController = async (req, res) => {
               //   url: platformPorfileURLClaimed,
               //   data: null,
               // });
+
               // console.log(platform.platform + " Unclaimed", {
               //   ...formatResponse(unclaimedUsernameResponse),
               //   url: platformPorfileURLUnclaimed,

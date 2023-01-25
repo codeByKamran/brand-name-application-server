@@ -15,7 +15,7 @@ import { corOptions } from "./config/cors.js";
 import rootRouter from "./routes/v1/root.js";
 
 import credentials from "./middlewares/credentials.js";
-import connectMongo from "./db/mongo.js";
+// import connectMongo from "./db/mongo.js";
 import { socketIOOptions } from "./config/socket.js";
 import nameCheckRouter from "./routes/v1/name-checker/check.js";
 import domainCheckRouter from "./routes/v1/domain-checker/check.js";

@@ -91,7 +91,7 @@ export const getUsernameStatus = (platform, response) => {
     }
 
     if (platform.errorType === "message_taken") {
-      // console.log(response?.data);
+      console.log(response?.data?.includes(platform.takenContentSearch));
       if (response?.data?.includes(platform.takenContentSearch)) {
         //  TAKEN
         return { available: false, checks: 1, platform: platform.platformCode };
