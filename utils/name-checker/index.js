@@ -35,7 +35,6 @@ export const getUsernameStatus = (platform, response) => {
   if (response.status) {
     // check if response valid
     if (platform.errorType === "message") {
-      // console.log(response?.data);
       // YouTube
       if (response?.data?.includes(platform.availableContentSearch)) {
         // AVAILABLE - Error message present in returned page content

@@ -148,17 +148,17 @@ export const checkNamesController = async (req, res) => {
                 data: null,
               });
 
-              // console.log(platform.platform + " Claimed", {
-              //   ...formatResponse(claimedUsernameResponse),
-              //   url: platformPorfileURLClaimed,
-              //   data: null,
-              // });
+              console.log(platform.platform + " Claimed", {
+                ...formatResponse(claimedUsernameResponse),
+                url: platformPorfileURLClaimed,
+                data: null,
+              });
 
-              // console.log(platform.platform + " Unclaimed", {
-              //   ...formatResponse(unclaimedUsernameResponse),
-              //   url: platformPorfileURLUnclaimed,
-              //   data: null,
-              // });
+              console.log(platform.platform + " Unclaimed", {
+                ...formatResponse(unclaimedUsernameResponse),
+                url: platformPorfileURLUnclaimed,
+                data: null,
+              });
 
               console.log(platform.platform + " Result", {
                 ...getUsernameStatus(

@@ -9,6 +9,32 @@ import { axiosDefault } from "../../axios/index.js";
 import { io } from "../../server.js";
 import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
 
+export const facebookNameChecker = async (req, res) => {
+  const { query: username } = req.params;
+  const { origin } = req.body;
+  console.log("Facebook username", username);
+
+  io.emit(
+    origin === "NAME_GENERATOR_POPUP"
+      ? "name_generator_platform_status_update"
+      : "platform_status_update",
+    {
+      message: "Logic Pending",
+      available: false,
+      username: username,
+      origin,
+      platform: "facebook",
+    }
+  );
+
+  res.status(200).json({
+    message: "Logic Pending",
+    available: false,
+    username: username,
+    platform: "facebook",
+  });
+};
+
 export const snapchatNameChecker = async (req, res) => {
   const { query: username } = req.params;
   const { origin } = req.body;

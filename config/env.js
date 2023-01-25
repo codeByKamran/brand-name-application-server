@@ -17,3 +17,6 @@ export default {
   PUSHER_CLUSTER: process.env.PUSHER_CLUSTER,
   LIVE_SERVER_DEPLOYMENT: "https://brand-names-backend.adaptable.app",
 };
+
+// https://brand-names-backend.adaptable.app
+// http://localhost:3500

@@ -4,12 +4,12 @@ Wix - Done
 Meetup - Done
 
 Show Taken
-Foursquare
-Facebook
-Ebay
-Vimeo
+Foursquare - Done
+Ebay - Blocking Requests
+Vimeo - Done
 
 Unimplemented
+Facebook
 Instagram
 Twitter
 Tiktok
