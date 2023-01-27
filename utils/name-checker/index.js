@@ -35,12 +35,12 @@ export const getUsernameStatus = (platform, response) => {
   if (response.status) {
     // check if response valid
     if (platform.errorType === "message") {
-      // YouTube
+      // console.log("Hy", response?.data);
       if (response?.data?.includes(platform.availableContentSearch)) {
         // AVAILABLE - Error message present in returned page content
-        if (platform?.availableStatusTexts.includes(response.statusText)) {
+        if (platform?.availableStatusTexts?.includes(response.statusText)) {
           // AVAILABLE - Double Check - Status messages matched
-          if (platform?.availableStatusCodes.includes(response.status)) {
+          if (platform?.availableStatusCodes?.includes(response.status)) {
             // AVAILABLE - Tripple Check - Status Codes matched
             return {
               available: true,
