@@ -9,6 +9,37 @@ import { axiosDefault } from "../../axios/index.js";
 import { io } from "../../server.js";
 import { formatSpecialPlatformStatus } from "../../utils/name-checker/index.js";
 
+export const instagramNameChecker = async (req, res) => {
+  const { query: username } = req.params;
+  const { origin } = req.body;
+  console.log("Instagram username", username);
+
+  buid(username, "id").then(({ data }) => {
+    let result = {};
+    if (data === `Cannot read properties of undefined (reading 'split')`) {
+      result = {
+        available: true,
+        platform: "instagram",
+        checks: 1,
+      };
+    } else {
+      result = {
+        available: false,
+        platform: "instagram",
+        checks: 1,
+      };
+    }
+
+    io.emit(
+      origin === "NAME_GENERATOR_POPUP"
+        ? "name_generator_platform_status_update"
+        : "platform_status_update",
+      { ...result, username, origin }
+    );
+    res.status(200).json(result);
+  });
+};
+
 export const facebookNameChecker = async (req, res) => {
   const { query: username } = req.params;
   const { origin } = req.body;
@@ -91,57 +122,6 @@ export const snapchatNameChecker = async (req, res) => {
     available: false,
     username: username,
     platform: "snapchat",
-  });
-};
-
-export const instagramNameChecker = async (req, res) => {
-  const { query: username } = req.params;
-  const { origin } = req.body;
-  console.log("Instagram username", username);
-
-  // buid(username, "id").then(({ data }) => {
-  //   let result = {};
-  //   if (data === `Cannot read properties of undefined (reading 'split')`) {
-  //     result = {
-  //       available: true,
-  //       platform: "instagram",
-  //       checks: 1,
-  //     };
-  //   } else {
-  //     result = {
-  //       available: false,
-  //       platform: "instagram",
-  //       checks: 1,
-  //     };
-  //   }
-
-  //   io.emit(
-  //     origin === "NAME_GENERATOR_POPUP"
-  //       ? "name_generator_platform_status_update"
-  //       : "platform_status_update",
-  //     { ...result, username, origin }
-  //   );
-  //   res.status(200).json(result);
-  // });
-
-  io.emit(
-    origin === "NAME_GENERATOR_POPUP"
-      ? "name_generator_platform_status_update"
-      : "platform_status_update",
-    {
-      message: "Logic Pending",
-      available: false,
-      username: username,
-      origin,
-      platform: "instagram",
-    }
-  );
-
-  res.status(200).json({
-    message: "Logic Pending",
-    available: false,
-    username: username,
-    platform: "instagram",
   });
 };
 
@@ -525,3 +505,23 @@ const browser = await puppeteer.launch({
     });
   */
 }
+
+// io.emit(
+//   origin === "NAME_GENERATOR_POPUP"
+//     ? "name_generator_platform_status_update"
+//     : "platform_status_update",
+//   {
+//     message: "Logic Pending",
+//     available: false,
+//     username: username,
+//     origin,
+//     platform: "instagram",
+//   }
+// );
+
+// res.status(200).json({
+//   message: "Logic Pending",
+//   available: false,
+//   username: username,
+//   platform: "instagram",
+// });

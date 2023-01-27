@@ -9,8 +9,8 @@ Ebay - Blocking Requests
 Vimeo - Done
 
 Unimplemented
+Instagram - Done
 Facebook
-Instagram
 Twitter
 Tiktok
 Snapchat
