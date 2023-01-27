@@ -46,74 +46,54 @@ export const twitterNameChecker = async (req, res) => {
   const { origin } = req.body;
   console.log("Twitter username", username);
 
-  const selectors = {
-    url: "https://twitter.com/" + username,
-    responseCheckText: "/ Twitter</title>",
-    availableCheckText: "<title>Profile / Twitter</title>",
-    takenCheckText: `"contentUrl"`,
-  };
-
-  let browser = null;
-  let page = null;
-
-  try {
-    browser = await puppeteer.launch({
-      args: ["--no-sandbox"],
-    });
-
-    page = await browser.newPage();
-  } catch (err) {
-    console.log("Twitter username check error", err.message);
-    res.status(500).json({ message: err.message });
-  }
-
-  try {
-    await page.goto(selectors.url, {
-      waitUntil: ["load", "domcontentloaded"],
-    });
-
-    const pageContent = await page.content();
-    let result = {};
-    // check for valid response
-    if (pageContent && pageContent?.includes(selectors.responseCheckText)) {
-      // valid response
-      if (pageContent?.includes(selectors.availableCheckText)) {
-        // username available
-        result = { available: true, checks: 1 };
-      } else {
-        // username unavailable
-        result = { available: false, checks: 1 };
-        // double check
-        if (pageContent?.includes(selectors.takenCheckText)) {
-          // username unavailable - double checked
-          result = { available: false, checks: 2 };
+  axiosDefault
+    .get("https://twitter.com/i/search/typeahead.json?q=" + username)
+    .then((response) => {
+      const users = response.data.users.map((user) => ({
+        id: user.id,
+        name: user.name,
+        screen_name: user.screen_name,
+      }));
+      let usernameCheckResult = null;
+      let count = 0;
+      users.forEach((user) => {
+        if (
+          String(user.screen_name).toLowerCase() ===
+          String(username).toLowerCase()
+        ) {
+          usernameCheckResult = {
+            matched: true,
+            perfectMatch: true,
+            count: count + 1,
+          };
+        } else if (
+          String(user.screen_name)
+            .toLowerCase()
+            .includes(String(username).toLowerCase())
+        ) {
+          usernameCheckResult = { matched: true, count: count + 1 };
+          count++;
         }
+      });
+      let result = {};
+      console.log("usernameCheckResul", usernameCheckResult);
+      if (!usernameCheckResult) {
+        result = { available: true, checks: 1, platform: "twitter" };
+      } else if (
+        usernameCheckResult?.matched ||
+        usernameCheckResult?.perfectMatch
+      ) {
+        result = { available: false, checks: 1, platform: "twitter" };
       }
-    } else {
-      // invalid response
-      // recheck again or abort check
-      result = {
-        available: false,
-        failed: true,
-        reason: "Request Returned Invalid Response",
-      };
-    }
-
-    res.status(200).json({ ...result, username, origin, platform: "twitter" });
-
-    io.emit(
-      origin === "NAME_GENERATOR_POPUP"
-        ? "name_generator_platform_status_update"
-        : "platform_status_update",
-      { ...result, username, origin, platform: "twitter" }
-    );
-  } catch (err) {
-    // some error occured loading page
-    console.log("Twitter username check error", err.message);
-    res.status(500).json({ message: err.message });
-  } finally {
-    await browser.close();
-  }
+      io.emit(
+        origin === "NAME_GENERATOR_POPUP"
+          ? "name_generator_platform_status_update"
+          : "platform_status_update",
+        { ...result, username, origin }
+      );
+      res.status(200).json(result);
+    })
+    .catch((err) => console.log(err.message));
 };
 
 export const tiktokNameChecker = async (req, res) => {
@@ -382,24 +362,5 @@ export const twitterNameChecker = async (req, res) => {
     })
     .catch((err) => console.log(err.message));
 
-  io.emit(
-    origin === "NAME_GENERATOR_POPUP"
-      ? "name_generator_platform_status_update"
-      : "platform_status_update",
-    {
-      message: "Logic Pending",
-      available: false,
-      username: username,
-      origin,
-      platform: "twitter",
-    }
-  );
-
-  res.status(200).json({
-    message: "Logic Pending",
-    available: false,
-    username: username,
-    platform: "twitter",
-  });
 };
 */
