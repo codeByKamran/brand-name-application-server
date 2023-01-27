@@ -41,76 +41,85 @@ export const instagramNameChecker = async (req, res) => {
   });
 };
 
-// const selectors = {
-//   url: "https://www.instagram.com/" + username,
-//   availableContentIndicator: "Sorry, this page isn't available.",
-// };
+export const twitterNameChecker = async (req, res) => {
+  const { query: username } = req.params;
+  const { origin } = req.body;
+  console.log("Twitter username", username);
 
-// let browser = null;
-// let page = null;
+  const selectors = {
+    url: "https://twitter.com/" + username,
+    responseCheckText: "/ Twitter</title>",
+    availableCheckText: "<title>Profile / Twitter</title>",
+    takenCheckText: `"contentUrl"`,
+  };
 
-// try {
-//   browser = await puppeteer.launch({
-//     args: ["--no-sandbox"],
-//   });
+  let browser = null;
+  let page = null;
 
-//   page = await browser.newPage();
-// } catch (err) {
-//   console.log(err.message);
-// }
+  try {
+    browser = await puppeteer.launch({
+      args: ["--no-sandbox"],
+    });
 
-// try {
-//   await page.goto(selectors.url, {
-//     waitUntil: ["load", "domcontentloaded"],
-//   });
+    page = await browser.newPage();
+  } catch (err) {
+    console.log("Twitter username check error", err.message);
+    res.status(500).json({ message: err.message });
+  }
 
-//   const pageContent = await page.content();
-//   console.log(pageContent);
+  try {
+    await page.goto(selectors.url, {
+      waitUntil: ["load", "domcontentloaded"],
+    });
 
-//   if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
-//     // mean present in content
-//     console.log("Available");
-//   } else {
-//     console.log("Not Available");
-//   }
-// } catch (err) {
-//   // some error occured
-//   console.log(err.message);
-// } finally {
-//   await browser.close();
-// }
+    const pageContent = await page.content();
+    let result = {};
+    // check for valid response
+    if (pageContent && pageContent?.includes(selectors.responseCheckText)) {
+      // valid response
+      if (pageContent?.includes(selectors.availableCheckText)) {
+        // username available
+        result = { available: true, checks: 1 };
+      } else {
+        // username unavailable
+        result = { available: false, checks: 1 };
+        // double check
+        if (pageContent?.includes(selectors.takenCheckText)) {
+          // username unavailable - double checked
+          result = { available: false, checks: 2 };
+        }
+      }
+    } else {
+      // invalid response
+      // recheck again or abort check
+      result = {
+        available: false,
+        failed: true,
+        reason: "Request Returned Invalid Response",
+      };
+    }
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+    res.status(200).json({ ...result, username, origin, platform: "twitter" });
 
-// const proxies = fs
-//   .readFileSync(path.join(__dirname, ".", "extra", "proxies.txt"), "utf-8")
-//   .replace(/\r/gi, "")
-//   .split("\n");
-
-// var userAgent = new UserAgent();
+    io.emit(
+      origin === "NAME_GENERATOR_POPUP"
+        ? "name_generator_platform_status_update"
+        : "platform_status_update",
+      { ...result, username, origin, platform: "twitter" }
+    );
+  } catch (err) {
+    // some error occured loading page
+    console.log("Twitter username check error", err.message);
+    res.status(500).json({ message: err.message });
+  } finally {
+    await browser.close();
+  }
+};
 
 export const tiktokNameChecker = async (req, res) => {
   const { query: username } = req.params;
   const { origin } = req.body;
   console.log("Tiktok username", username);
-
-  // let proxy = proxies[Math.floor(Math.random() * proxies.length)];
-  // let agent = new ProxyAgent(`socks4://` + proxy);
-
-  // console.log(agent);
-
-  // io.emit(
-  //   origin === "NAME_GENERATOR_POPUP"
-  //     ? "name_generator_platform_status_update"
-  //     : "platform_status_update",
-  //   {
-  //     message: "Logic Pending",
-  //     available: false,
-  //     username,
-  //     origin,
-  //   }
-  // );
 
   io.emit(
     origin === "NAME_GENERATOR_POPUP"
@@ -133,294 +142,18 @@ export const tiktokNameChecker = async (req, res) => {
   });
 };
 
-export const twitterNameChecker = async (req, res) => {
-  const { query: username } = req.params;
-  const { origin } = req.body;
-  console.log("Twitter username", username);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-  // axiosDefault
-  //   .get("https://twitter.com/i/search/typeahead.json?q=" + username)
-  //   .then((response) => {
-  //     const users = response.data.users.map((user) => ({
-  //       id: user.id,
-  //       name: user.name,
-  //       screen_name: user.screen_name,
-  //     }));
-  //     let usernameCheckResult = null;
-  //     let count = 0;
-  //     users.forEach((user) => {
-  //       if (
-  //         String(user.screen_name).toLowerCase() ===
-  //         String(username).toLowerCase()
-  //       ) {
-  //         usernameCheckResult = {
-  //           matched: true,
-  //           perfectMatch: true,
-  //           count: count + 1,
-  //         };
-  //       } else if (
-  //         String(user.screen_name)
-  //           .toLowerCase()
-  //           .includes(String(username).toLowerCase())
-  //       ) {
-  //         usernameCheckResult = { matched: true, count: count + 1 };
-  //         count++;
-  //       }
-  //     });
-  //     let result = {};
-  //     console.log({ usernameCheckResult });
-  //     if (!usernameCheckResult) {
-  //       result = { available: true, checks: 1, platform: "twitter" };
-  //     } else if (
-  //       usernameCheckResult?.matched ||
-  //       usernameCheckResult?.perfectMatch
-  //     ) {
-  //       result = { available: false, checks: 1, platform: "twitter" };
-  //     }
-  //     io.emit(
-  //       origin === "NAME_GENERATOR_POPUP"
-  //         ? "name_generator_platform_status_update"
-  //         : "platform_status_update",
-  //       { ...result, username, origin }
-  //     );
-  //     res.status(200).json(result);
-  //   })
-  //   .catch((err) => console.log(err.message));
+// const proxies = fs
+//   .readFileSync(path.join(__dirname, ".", "extra", "proxies.txt"), "utf-8")
+//   .replace(/\r/gi, "")
+//   .split("\n");
 
-  io.emit(
-    origin === "NAME_GENERATOR_POPUP"
-      ? "name_generator_platform_status_update"
-      : "platform_status_update",
-    {
-      message: "Logic Pending",
-      available: false,
-      username: username,
-      origin,
-      platform: "twitter",
-    }
-  );
+// var userAgent = new UserAgent();
 
-  res.status(200).json({
-    message: "Logic Pending",
-    available: false,
-    username: username,
-    platform: "twitter",
-  });
-};
-
-/*
-Instagram Junk
-
-async function checkAvailability(str) {
-    const selectors = {
-      url: "https://www.instagram.com/" + str,
-      availableContentIndicator: "Sorry, this page isn't available.",
-    };
-
-    let browser = null;
-    let page = null;
-
-    try {
-      browser = await puppeteer.launch({
-        args: ["--no-sandbox"],
-      });
-
-      page = await browser.newPage();
-    } catch (err) {
-      console.log(err.message);
-      return {
-        available: false,
-        error: true,
-        message: err.message,
-        platform: "instagram",
-        checks: 1,
-      };
-    }
-
-    try {
-      await page.goto(selectors.url, {
-        waitUntil: ["load", "domcontentloaded"],
-      });
-
-      const pageContent = await page.content();
-
-      if (pageContent?.indexOf(selectors.availableContentIndicator) > -1) {
-        // mean present in content
-        return {
-          available: true,
-          platform: "instagram",
-          checks: 1,
-        };
-      } else {
-        return {
-          available: false,
-          platform: "instagram",
-          checks: 1,
-        };
-      }
-    } catch (err) {
-      // some error occured
-      console.log(err.message);
-      return {
-        available: false,
-        error: true,
-        message: err.message,
-        platform: "instagram",
-        checks: 1,
-      };
-    } finally {
-      await browser.close();
-    }
-  }
-
-  const result = await checkAvailability(username);
-  const result = {
-    available: true,
-    platform: "instagram",
-    checks: 1,
-  };
-
-  io.emit(origin === "NAME_GENERATOR_POPUP"
-                  ? "name_generator_platform_status_update"
-                  : "platform_status_update", result);
-
-  res.status(200).json(result);
-*/
-
-/*
-Tiktok junk
-
-// axiosDefault
-  //   .head(`https://www.tiktok.com/@${username}`, {
-  //     headers: {
-  //       "User-Agent": userAgent.toString(),
-  //       // "accept-encoding": "gzip, deflate, br",
-  //       "accept-language": "en-US",
-  //       "content-type": "application/json",
-  //     },
-  //     httpsAgent: agent,
-  //   })
-  //   .then((ress) => {
-  //     console.log("1", ress);
-  //   })
-  //   .catch((err) => console.log("1", err.message));
-
-  // axiosDefault
-  //   .head(`https://www.tiktok.com/@${username}`, {
-  //     headers: {
-  //       "User-Agent": userAgent.toString(),
-  //       // "accept-encoding": "gzip, deflate, br",
-  //       "accept-language": "en-US",
-  //       "content-type": "application/json",
-  //     },
-  //     httpAgent: agent,
-  //   })
-  //   .then((ress) => {
-  //     console.log("2", ress);
-  //   })
-  //   .catch((err) => console.log("2", err.message));
-
-  // axiosDefault
-  //   .get(`https://www.tiktok.com/@${username}`, {
-  //     headers: {
-  //       "User-Agent": userAgent.toString(),
-  //       "accept-encoding": "gzip, deflate, br",
-  //       "accept-language": "en-US",
-  //       "content-type": "application/json",
-  //     },
-  //     httpAgent: agent,
-  //   })
-  //   .then((ress) => {
-  //     console.log("3", ress);
-  //   })
-  //   .catch((err) => console.log("3", err.message));
-
-  // request(
-  //   {
-  //     method: "HEAD",
-  //     url: `https://www.tiktok.com/@${username}`,
-  //     agent,
-  //     headers: {
-  //       "User-Agent": userAgent.toString(),
-  //       "accept-encoding": "gzip, deflate, br",
-  //       "accept-language": "en-US",
-  //       "content-type": "application/json",
-  //     },
-  //   },
-  //   (errrr, resss, body) => {
-  //     if (errrr) {
-  //       console.log("Request error", errrr);
-  //     }
-  //     console.log("Request resss", resss);
-  //     console.log("Request body", body);
-  //   }
-  // );
-*/
-
-{
-  /*
-
-  Twitter junk
-
-    // twitterName(username, function (err, isAvailable) {
-  //   console.log(isAvailable);
-  // });
-
-
-const browser = await puppeteer.launch({
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      '--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36"',
-    ],
-  });
-  try {
-    const page = await browser.newPage();
-    await page.goto("https://instagram.com/enoonewu");
-
-    const content = await page.content();
-    console.log(content);
-  } catch (err) {
-    console.log(err.message);
-  }
-
-  await browser.close();
-
-  const headers = {
-    accept: "*",
-    "accept-encoding": "gzip, deflate, br",
-    "accept-language": "en-US,en;q=0.9,bn;q=0.8",
-    authorization:
-      "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA",
-    "content-type": "application/json",
-    dnt: "1",
-    origin: "https://twitter.com",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-site",
-    "user-agent":
-      "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Mobile Safari/537.36",
-    "x-twitter-active-user": "yes",
-    "x-twitter-client-language": "en",
-  };
-
-  const url =
-    "https://api.twitter.com/graphql/P8ph10GzBbdMqWZxulqCfA/UserByScreenName?variables=%7B%22screen_name%22%3A%22" +
-    twitterUsername +
-    "%22%2C%22withHighlightedLabel%22%3Atrue%7D";
-
-  axiosDefault
-    .get(url, { headers })
-    .then((response) => {
-      console.log(response);
-      res.status(200).json({ result: response.data });
-    })
-    .catch((err) => {
-      console.log(err.message);
-      res.status(500).json({ message: err.message });
-    });
-  */
-}
+// let proxy = proxies[Math.floor(Math.random() * proxies.length)];
+// let agent = new ProxyAgent(`socks4://` + proxy);
 
 // io.emit(
 //   origin === "NAME_GENERATOR_POPUP"
@@ -512,3 +245,161 @@ const browser = await puppeteer.launch({
 //   platform: "snapchat",
 // });
 // };
+
+//  Twitter Username Checker Working
+/*
+export const twitterNameChecker = async (req, res) => {
+  const { query: username } = req.params;
+  const { origin } = req.body;
+  console.log("Twitter username", username);
+
+  const selectors = {
+    url: "https://twitter.com/" + username,
+    responseCheckText: "/ Twitter</title>",
+    availableCheckText: "<title>Profile / Twitter</title>",
+    takenCheckText: `"contentUrl"`,
+  };
+
+  let browser = null;
+  let page = null;
+
+  try {
+    browser = await puppeteer.launch({
+      args: ["--no-sandbox"],
+    });
+
+    page = await browser.newPage();
+  } catch (err) {
+    console.log("Twitter username check error", err.message);
+    res.status(500).json({ message: err.message });
+  }
+
+  try {
+    await page.goto(selectors.url, {
+      waitUntil: ["load", "domcontentloaded"],
+    });
+
+    const pageContent = await page.content();
+    let result = {};
+    // check for valid response
+    if (pageContent && pageContent?.includes(selectors.responseCheckText)) {
+      // valid response
+      if (pageContent?.includes(selectors.availableCheckText)) {
+        // username available
+        result = { available: true, checks: 1 };
+      } else {
+        // username unavailable
+        result = { available: false, checks: 1 };
+        // double check
+        if (pageContent?.includes(selectors.takenCheckText)) {
+          // username unavailable - double checked
+          result = { available: false, checks: 2 };
+        }
+      }
+    } else {
+      // invalid response
+      // recheck again or abort check
+      result = {
+        available: false,
+        failed: true,
+        reason: "Request Returned Invalid Response",
+      };
+    }
+
+    res.status(200).json({ ...result, username, origin, platform: "twitter" });
+
+    io.emit(
+      origin === "NAME_GENERATOR_POPUP"
+        ? "name_generator_platform_status_update"
+        : "platform_status_update",
+      { ...result, username, origin, platform: "twitter" }
+    );
+  } catch (err) {
+    // some error occured loading page
+    console.log("Twitter username check error", err.message);
+    res.status(500).json({ message: err.message });
+  } finally {
+    await browser.close();
+  }
+};
+
+*/
+
+// Twitter Username Checker 2 (Working)
+
+/*
+export const twitterNameChecker = async (req, res) => {
+  const { query: username } = req.params;
+  const { origin } = req.body;
+  console.log("Twitter username", username);
+
+  axiosDefault
+    .get("https://twitter.com/i/search/typeahead.json?q=" + username)
+    .then((response) => {
+      const users = response.data.users.map((user) => ({
+        id: user.id,
+        name: user.name,
+        screen_name: user.screen_name,
+      }));
+      let usernameCheckResult = null;
+      let count = 0;
+      users.forEach((user) => {
+        if (
+          String(user.screen_name).toLowerCase() ===
+          String(username).toLowerCase()
+        ) {
+          usernameCheckResult = {
+            matched: true,
+            perfectMatch: true,
+            count: count + 1,
+          };
+        } else if (
+          String(user.screen_name)
+            .toLowerCase()
+            .includes(String(username).toLowerCase())
+        ) {
+          usernameCheckResult = { matched: true, count: count + 1 };
+          count++;
+        }
+      });
+      let result = {};
+      console.log("usernameCheckResul", usernameCheckResult);
+      if (!usernameCheckResult) {
+        result = { available: true, checks: 1, platform: "twitter" };
+      } else if (
+        usernameCheckResult?.matched ||
+        usernameCheckResult?.perfectMatch
+      ) {
+        result = { available: false, checks: 1, platform: "twitter" };
+      }
+      io.emit(
+        origin === "NAME_GENERATOR_POPUP"
+          ? "name_generator_platform_status_update"
+          : "platform_status_update",
+        { ...result, username, origin }
+      );
+      res.status(200).json(result);
+    })
+    .catch((err) => console.log(err.message));
+
+  io.emit(
+    origin === "NAME_GENERATOR_POPUP"
+      ? "name_generator_platform_status_update"
+      : "platform_status_update",
+    {
+      message: "Logic Pending",
+      available: false,
+      username: username,
+      origin,
+      platform: "twitter",
+    }
+  );
+
+  res.status(200).json({
+    message: "Logic Pending",
+    available: false,
+    username: username,
+    platform: "twitter",
+  });
+};
+*/
