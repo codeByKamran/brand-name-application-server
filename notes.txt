@@ -5,12 +5,11 @@ Meetup - Done
 
 Show Taken
 Foursquare - Done
-Ebay - Blocking Requests
 Vimeo - Done
 
 Unimplemented
 Instagram - Done
+Snapchat - Done
 Facebook
 Twitter
 Tiktok
-Snapchat
